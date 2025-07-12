@@ -78,7 +78,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
     }
     packaging {
         resources {
@@ -107,10 +107,10 @@ compose.desktop {
         mainClass = "org.mefetran.munchkinmaster.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage,
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage,
                 TargetFormat.Rpm)
             packageName = "org.mefetran.munchkinmaster"
-            packageVersion = "1.0.0"
+            packageVersion = "0.0.1"
             linux {
                 iconFile.set(project.file("../media/appicon/app_icon.png"))
             }
