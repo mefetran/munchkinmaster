@@ -41,6 +41,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(libs.compose.ui.backhandler)
             implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -52,10 +53,13 @@ kotlin {
             implementation(libs.kotlinx.serialization)
             implementation(libs.decompose)
             implementation(libs.decompose.extensions.compose)
+            implementation(libs.essenty.lifecycle)
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

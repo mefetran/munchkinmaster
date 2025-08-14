@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="hello">Hello</string>
+    <string name="level">Level</string>
+    <string name="power">Power</string>
+    <string name="start_battle">Start battle</string>
+</resources>

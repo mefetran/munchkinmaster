@@ -6,9 +6,9 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
-import org.mefetran.munchkinmaster.model.PlayerEntity
+import org.mefetran.munchkinmaster.model.Player
 
-@Database(entities = [PlayerEntity::class], version = 1)
+@Database(entities = [Player::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun getPlayerDao(): PlayerDao

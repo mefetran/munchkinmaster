@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,11 +19,12 @@ import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.mefetran.munchkinmaster.ui.theme.MunchkinMasterTheme
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    MunchkinMasterTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
