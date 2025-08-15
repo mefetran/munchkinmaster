@@ -5,10 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import munchkinmaster.composeapp.generated.resources.Res
+import munchkinmaster.composeapp.generated.resources.henny_penny
 import munchkinmaster.composeapp.generated.resources.inter_bold
 import munchkinmaster.composeapp.generated.resources.inter_medium
 import munchkinmaster.composeapp.generated.resources.inter_regular
-import munchkinmaster.composeapp.generated.resources.ruslan_regular
 import org.jetbrains.compose.resources.Font
 
 val Inter @Composable get() = FontFamily(
@@ -26,9 +26,9 @@ val Inter @Composable get() = FontFamily(
     ),
 )
 
-val Ruslan @Composable get() =  FontFamily(
+val HennyPenny @Composable get() =  FontFamily(
     Font(
-        resource = Res.font.ruslan_regular,
+        resource = Res.font.henny_penny,
         weight = FontWeight.Normal
     )
 )
@@ -53,7 +53,7 @@ val AppTypography @Composable get() =  Typography(
     labelSmall = baseline.labelSmall.copy(fontFamily = Inter),
 )
 
-val ruslanTextStyle @Composable get() = baseline.displaySmall.copy(
-    fontFamily = Ruslan,
+val hennyPennyTextStyle @Composable get() = baseline.titleMedium.copy(
+    fontFamily = HennyPenny,
     fontWeight = FontWeight.Normal,
 )

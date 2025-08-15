@@ -4,4 +4,6 @@
     <string name="level">Level</string>
     <string name="power">Power</string>
     <string name="start_battle">Start battle</string>
+    <string name="total_power">Total power</string>
+    <string name="players_title">Players</string>
 </resources>

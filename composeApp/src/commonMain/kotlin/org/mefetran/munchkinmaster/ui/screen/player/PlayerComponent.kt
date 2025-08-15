@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.mefetran.munchkinmaster.model.Sex
 import org.mefetran.munchkinmaster.repository.MockPlayerRepository
 import org.mefetran.munchkinmaster.repository.PlayerRepository
 import org.mefetran.munchkinmaster.util.coroutineScope
@@ -21,6 +22,7 @@ interface PlayerComponent {
     fun onBackClick()
     fun onLevelChange(newValue: Int)
     fun onPowerChange(newValue: Int)
+    fun onSexChange()
 }
 
 class DefaultPlayerComponent(
@@ -64,6 +66,24 @@ class DefaultPlayerComponent(
     }
 
     override fun onBackClick() = onFinished()
+
+    override fun onSexChange() {
+        scope.launch {
+            _state.value.player?.let { player ->
+                val sex = runCatching {
+                    Sex
+                        .valueOf(player.sex)
+                }.getOrDefault(Sex.female)
+                val updated = player.copy(
+                    sex = when (sex) {
+                        Sex.male -> Sex.female.name
+                        Sex.female -> Sex.male.name
+                    }
+                )
+                playerRepository.updatePlayer(updated)
+            }
+        }
+    }
 }
 
 class MockPlayerComponent(
@@ -106,4 +126,22 @@ class MockPlayerComponent(
     }
 
     override fun onBackClick() = onFinished()
+
+    override fun onSexChange() {
+        scope.launch {
+            _state.value.player?.let { player ->
+                val sex = runCatching {
+                    Sex
+                        .valueOf(player.sex)
+                }.getOrDefault(Sex.female)
+                val updated = player.copy(
+                    sex = when (sex) {
+                        Sex.male -> Sex.female.name
+                        Sex.female -> Sex.male.name
+                    }
+                )
+                playerRepository.updatePlayer(updated)
+            }
+        }
+    }
 }

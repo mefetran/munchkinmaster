@@ -4,4 +4,6 @@
     <string name="level">Уровень</string>
     <string name="power">Сила</string>
     <string name="start_battle">Начать бой</string>
+    <string name="total_power">Общая сила</string>
+    <string name="players_title">Игроки</string>
 </resources>

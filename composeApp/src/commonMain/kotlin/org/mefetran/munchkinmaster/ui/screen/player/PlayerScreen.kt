@@ -2,6 +2,8 @@ package org.mefetran.munchkinmaster.ui.screen.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +36,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -45,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
@@ -54,7 +59,7 @@ import munchkinmaster.composeapp.generated.resources.start_battle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Sex
-import org.mefetran.munchkinmaster.ui.theme.ruslanTextStyle
+import org.mefetran.munchkinmaster.ui.theme.hennyPennyTextStyle
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -113,6 +118,12 @@ fun PlayerScreen(
                     contentDescription = "Gender",
                     tint = if (state.player?.sex?.lowercase() == Sex.male.name) Color.Blue else Color.Magenta,
                     modifier = Modifier.padding(start = 8.dp).size(24.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(bounded = true),
+                            onClick = component::onSexChange
+                        )
                 )
             }
 
@@ -201,7 +212,7 @@ private fun StatusCard(
                 ) {
                     Text(
                         text =value.toString(),
-                        style = ruslanTextStyle
+                        style = hennyPennyTextStyle.copy(fontSize = 24.sp)
                     )
                 }
                 IconButton(

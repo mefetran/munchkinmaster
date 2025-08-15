@@ -10,3 +10,25 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) apply false
     alias(libs.plugins.roomGradlePlugin) apply false
 }
+
+// After updating the Compose dependency,
+// the Skiko cache sometimes conflicts with the new Compose version.
+// Therefore, we clean the Skiko cache after every clean task.
+tasks.register("clean") {
+    group = "build"
+    description = "Cleans composeApp and Skiko cache"
+
+    dependsOn(":composeApp:clean")
+
+    doLast {
+        val skikoCacheDir = File(System.getProperty("user.home"), ".skiko")
+
+        if (skikoCacheDir.exists()) {
+            println("Removing Skiko cache: ${skikoCacheDir.absolutePath}")
+            skikoCacheDir.deleteRecursively()
+            println("Skiko cache removed")
+        } else {
+            println("No Skiko cache found — nothing to clean")
+        }
+    }
+}
