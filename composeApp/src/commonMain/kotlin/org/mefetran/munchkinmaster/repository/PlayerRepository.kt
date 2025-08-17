@@ -5,14 +5,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.mefetran.munchkinmaster.db.PlayerDao
 import org.mefetran.munchkinmaster.model.Player
+import org.mefetran.munchkinmaster.model.Sex
 
 interface PlayerRepository {
-    suspend fun insert(item: Player)
+    suspend fun insert(item: Player): Long
     suspend fun updatePlayer(item: Player): Int
     fun getPlayersAsFlow(): Flow<List<Player>>
     fun getPlayerById(playerId: Long): Flow<Player?>
     suspend fun deleteAllPlayers()
     suspend fun deletePlayerById(playerId: Long): Int
+    suspend fun deletePlayersByIds(playerIds: Set<Long>): Int
 }
 
 class DefaultPlayerRepository(
@@ -22,10 +24,10 @@ class DefaultPlayerRepository(
     override suspend fun updatePlayer(item: Player): Int = playerDao.updatePlayer(item)
     override fun getPlayersAsFlow(): Flow<List<Player>> = playerDao.getPlayersAsFlow()
     override fun getPlayerById(playerId: Long): Flow<Player?> = playerDao.getPlayerById(playerId)
-
     override suspend fun deleteAllPlayers() = playerDao.deleteAllPlayers()
     override suspend fun deletePlayerById(playerId: Long): Int =
         playerDao.deletePlayerById(playerId)
+    override suspend fun deletePlayersByIds(playerIds: Set<Long>): Int = playerDao.deletePlayersByIds(playerIds)
 }
 
 class MockPlayerRepository() : PlayerRepository {
@@ -34,7 +36,7 @@ class MockPlayerRepository() : PlayerRepository {
             Player(
                 id = 1,
                 name = "Denis",
-                sex = "male",
+                sex = Sex.male,
                 level = 1,
                 power = 1,
                 avatar = "",
@@ -42,7 +44,7 @@ class MockPlayerRepository() : PlayerRepository {
             Player(
                 id = 2,
                 name = "Lida",
-                sex = "female",
+                sex = Sex.female,
                 level = 2,
                 power = 2,
                 avatar = "",
@@ -50,8 +52,9 @@ class MockPlayerRepository() : PlayerRepository {
         )
     )
 
-    override suspend fun insert(item: Player) {
+    override suspend fun insert(item: Player): Long {
         playersFlow.value = playersFlow.value + item
+        return item.id
     }
 
     override suspend fun updatePlayer(item: Player): Int {
@@ -75,5 +78,12 @@ class MockPlayerRepository() : PlayerRepository {
         val beforeSize = playersFlow.value.size
         playersFlow.value = playersFlow.value.filterNot { it.id == playerId }
         return if (beforeSize != playersFlow.value.size) 1 else 0
+    }
+
+    override suspend fun deletePlayersByIds(playerIds: Set<Long>): Int {
+        val beforeSize = playersFlow.value.size
+        playersFlow.value = playersFlow.value.filterNot { it.id in playerIds }
+
+        return beforeSize - playersFlow.value.size
     }
 }

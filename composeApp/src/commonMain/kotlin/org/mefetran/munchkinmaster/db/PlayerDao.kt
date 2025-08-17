@@ -10,7 +10,7 @@ import org.mefetran.munchkinmaster.model.Player
 @Dao
 interface PlayerDao {
     @Insert
-    suspend fun insert(item: Player)
+    suspend fun insert(item: Player): Long
 
     @Update
     suspend fun updatePlayer(item: Player): Int
@@ -26,4 +26,7 @@ interface PlayerDao {
 
     @Query("DELETE FROM Player WHERE id = :playerId")
     suspend fun deletePlayerById(playerId: Long): Int
+
+    @Query("DELETE FROM Player WHERE id IN (:playerIds)")
+    suspend fun deletePlayersByIds(playerIds: Set<Long>): Int
 }

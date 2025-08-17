@@ -3,7 +3,16 @@
     <string name="hello">Привет</string>
     <string name="level">Уровень</string>
     <string name="power">Сила</string>
+    <string name="sex">Пол</string>
+    <string name="name">Имя</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="create">Создать</string>
     <string name="start_battle">Начать бой</string>
     <string name="total_power">Общая сила</string>
     <string name="players_title">Игроки</string>
+    <string name="error_create_player">Произошла ошибка при создании игрока!</string>
+    <string name="error_delete_players">Произошла ошибка во время удаления игроков!</string>
+    <string name="error_title">Ошибка</string>
+    <string name="ok">Ок</string>
+    <string name="cancel">Отмена</string>
 </resources>

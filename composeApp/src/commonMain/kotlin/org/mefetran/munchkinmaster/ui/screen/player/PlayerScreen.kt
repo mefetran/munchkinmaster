@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
-import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -49,17 +48,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
+import munchkinmaster.composeapp.generated.resources.ic_battle
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.power
 import munchkinmaster.composeapp.generated.resources.start_battle
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Sex
-import org.mefetran.munchkinmaster.ui.theme.hennyPennyTextStyle
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -97,7 +96,7 @@ fun PlayerScreen(
             }
             AsyncImage(
                 model = state.player?.avatar,
-                contentDescription = "Avatar",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
@@ -114,9 +113,9 @@ fun PlayerScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Icon(
-                    imageVector = if (state.player?.sex?.lowercase() == Sex.male.name) Icons.Default.Male else Icons.Default.Female,
-                    contentDescription = "Gender",
-                    tint = if (state.player?.sex?.lowercase() == Sex.male.name) Color.Blue else Color.Magenta,
+                    imageVector = if (state.player?.sex == Sex.male) Icons.Default.Male else Icons.Default.Female,
+                    contentDescription = null,
+                    tint = if (state.player?.sex == Sex.male) Color.Blue else Color.Magenta,
                     modifier = Modifier.padding(start = 8.dp).size(24.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable(
@@ -155,8 +154,8 @@ fun PlayerScreen(
                     .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
             ) {
                 Icon(
-                    imageVector = Icons.Default.RocketLaunch,
-                    contentDescription = "Начать бой",
+                    painter = painterResource(Res.drawable.ic_battle),
+                    contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(36.dp)
                 )
@@ -211,8 +210,8 @@ private fun StatusCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text =value.toString(),
-                        style = hennyPennyTextStyle.copy(fontSize = 24.sp)
+                        text = value.toString(),
+                        style = MaterialTheme.typography.headlineSmall
                     )
                 }
                 IconButton(

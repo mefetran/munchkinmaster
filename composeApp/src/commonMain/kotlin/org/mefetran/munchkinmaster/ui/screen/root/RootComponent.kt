@@ -8,6 +8,8 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
+import org.mefetran.munchkinmaster.ui.screen.createplayer.CreatePlayerComponent
+import org.mefetran.munchkinmaster.ui.screen.createplayer.DefaultCreatePlayerComponent
 import org.mefetran.munchkinmaster.ui.screen.player.DefaultPlayerComponent
 import org.mefetran.munchkinmaster.ui.screen.player.PlayerComponent
 import org.mefetran.munchkinmaster.ui.screen.playerlist.DefaultPlayerListComponent
@@ -19,6 +21,7 @@ interface RootComponent {
     sealed interface Child {
         class PlayerList(val component: PlayerListComponent) : Child
         class Player(val component: PlayerComponent) : Child
+        class CreatePlayer(val component: CreatePlayerComponent) : Child
     }
 }
 
@@ -53,6 +56,18 @@ class DefaultRootComponent(
                 componentContext = componentContext,
                 openPlayer = { playerId ->
                     navigation.pushNew(Config.Player(playerId))
+                },
+                openCreatePlayer = {
+                    navigation.pushNew(Config.CreatePlayer)
+                },
+            )
+        )
+
+        Config.CreatePlayer -> RootComponent.Child.CreatePlayer(
+            DefaultCreatePlayerComponent(
+                componentContext = componentContext,
+                onFinished = {
+                    navigation.pop()
                 }
             )
         )
@@ -62,6 +77,9 @@ class DefaultRootComponent(
     private sealed interface Config {
         @Serializable
         data object PlayerList : Config
+        @Serializable
         data class Player(val playerId: Long) : Config
+        @Serializable
+        data object CreatePlayer : Config
     }
 }

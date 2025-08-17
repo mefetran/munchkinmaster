@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8fccd74f47ee4f3eef610900cea607d9",
+    "identityHash": "1e30eacebb15da6852deb722d9ad62d5",
     "entities": [
       {
         "tableName": "Player",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `sex` TEXT NOT NULL, `level` INTEGER NOT NULL, `power` INTEGER NOT NULL, `avatar` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `sex` INTEGER NOT NULL, `level` INTEGER NOT NULL, `power` INTEGER NOT NULL, `avatar` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,7 +23,7 @@
           {
             "fieldPath": "sex",
             "columnName": "sex",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -55,7 +55,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8fccd74f47ee4f3eef610900cea607d9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e30eacebb15da6852deb722d9ad62d5')"
     ]
   }
 }

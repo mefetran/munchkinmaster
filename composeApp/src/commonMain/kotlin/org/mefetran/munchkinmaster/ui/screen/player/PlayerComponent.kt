@@ -70,14 +70,10 @@ class DefaultPlayerComponent(
     override fun onSexChange() {
         scope.launch {
             _state.value.player?.let { player ->
-                val sex = runCatching {
-                    Sex
-                        .valueOf(player.sex)
-                }.getOrDefault(Sex.female)
                 val updated = player.copy(
-                    sex = when (sex) {
-                        Sex.male -> Sex.female.name
-                        Sex.female -> Sex.male.name
+                    sex = when (player.sex) {
+                        Sex.male -> Sex.female
+                        Sex.female -> Sex.male
                     }
                 )
                 playerRepository.updatePlayer(updated)
@@ -130,14 +126,10 @@ class MockPlayerComponent(
     override fun onSexChange() {
         scope.launch {
             _state.value.player?.let { player ->
-                val sex = runCatching {
-                    Sex
-                        .valueOf(player.sex)
-                }.getOrDefault(Sex.female)
                 val updated = player.copy(
-                    sex = when (sex) {
-                        Sex.male -> Sex.female.name
-                        Sex.female -> Sex.male.name
+                    sex = when (player.sex) {
+                        Sex.male -> Sex.female
+                        Sex.female -> Sex.male
                     }
                 )
                 playerRepository.updatePlayer(updated)

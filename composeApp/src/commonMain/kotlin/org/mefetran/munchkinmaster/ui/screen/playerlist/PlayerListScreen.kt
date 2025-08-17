@@ -1,59 +1,81 @@
 package org.mefetran.munchkinmaster.ui.screen.playerlist
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
-import munchkinmaster.composeapp.generated.resources.level
+import munchkinmaster.composeapp.generated.resources.cancel
+import munchkinmaster.composeapp.generated.resources.ic_level
+import munchkinmaster.composeapp.generated.resources.ic_power
+import munchkinmaster.composeapp.generated.resources.ic_total_power
 import munchkinmaster.composeapp.generated.resources.players_title
-import munchkinmaster.composeapp.generated.resources.power
-import munchkinmaster.composeapp.generated.resources.total_power
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Player
 import org.mefetran.munchkinmaster.model.Sex
-import org.mefetran.munchkinmaster.ui.theme.hennyPennyTextStyle
+import org.mefetran.munchkinmaster.ui.uikit.dialog.ErrorDialog
+import org.mefetran.munchkinmaster.ui.uikit.utils.conditional
+import org.mefetran.munchkinmaster.ui.uikit.utils.getAndroidContext
+import org.mefetran.munchkinmaster.ui.uikit.utils.performHapticFeedback
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PlayerListScreen(
     component: PlayerListComponent,
     modifier: Modifier = Modifier,
 ) {
     val playerList by component.playerListState.subscribeAsState()
+    val state by component.state.subscribeAsState()
+
+    BackHandler(
+        enabled = state.isDeleteMode
+    ) {
+        component.onDeleteModeOff()
+    }
 
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -65,32 +87,105 @@ fun PlayerListScreen(
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(16.dp).fillMaxWidth()
+                    modifier = Modifier.padding(16.dp).fillMaxWidth().height(56.dp)
                 ) {
                     Text(
                         text = stringResource(Res.string.players_title),
                         style = MaterialTheme.typography.headlineMedium.copy(color = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.weight(1f)
                     )
-                    TextButton(
-                        onClick = component::onAddPlayerClick
-                    ) {
-                        Text(
-                            text = "+1",
-                            style = MaterialTheme.typography.headlineMedium.copy(color = MaterialTheme.colorScheme.primary),
-                        )
+                    AnimatedContent(
+                        targetState = state.isDeleteMode
+                    ) { currentState ->
+                        when (currentState) {
+                            true -> {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    TextButton(
+                                        onClick = component::onDeleteModeOff
+                                    ) {
+                                        Text(
+                                            text = stringResource(Res.string.cancel),
+                                            style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary),
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = component::onDeletePlayers,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    ) {
+                                        Row {
+                                            if (state.playerIdsToDelete.isNotEmpty()) {
+                                                Text(
+                                                    text = "${state.playerIdsToDelete.size}",
+                                                    style = MaterialTheme.typography.titleMedium.copy(
+                                                        color = MaterialTheme.colorScheme.primary
+                                                    ),
+                                                )
+                                            }
+                                            Icon(
+                                                imageVector = Icons.Filled.Delete,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            false -> {
+                                IconButton(
+                                    onClick = component::onAddPlayerClick,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Add,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
             items(playerList) { player ->
                 PlayerItem(
                     player = player,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .conditional(
+                            condition = state.playerIdsToDelete.contains(player.id),
+                            ifTrue = {
+                                border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.error,
+                                    shape = CardDefaults.shape,
+                                )
+                            },
+                        ),
                     onClick = {
-                        component.onPlayerClick(player.id)
+                        when (state.isDeleteMode) {
+                            true -> component.onAddToDelete(player.id)
+                            false -> component.onPlayerClick(player.id)
+                        }
+                    },
+                    onLongClick = {
+                        if (!state.isDeleteMode) {
+                            component.onDeleteModeOn()
+                            component.onAddToDelete(player.id)
+                        }
                     }
                 )
             }
+        }
+
+        state.errorMessageResId?.let { errorMessageResId ->
+            ErrorDialog(
+                errorMessageResId = errorMessageResId,
+                onDismissRequest = component::hideErrorMessage,
+                onOkClick = component::hideErrorMessage,
+                properties = DialogProperties(dismissOnClickOutside = false)
+            )
         }
     }
 }
@@ -99,14 +194,27 @@ fun PlayerListScreen(
 private fun PlayerItem(
     player: Player,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
 ) {
+    val context = getAndroidContext()
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
-        modifier = modifier.fillMaxWidth(),
-        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(CardDefaults.shape)
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(),
+                onClick = onClick,
+                onLongClick = {
+                    performHapticFeedback(context)
+                    onLongClick()
+                }
+            ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -121,71 +229,58 @@ private fun PlayerItem(
                     .clip(CircleShape)
                     .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
             )
-            Row(Modifier.weight(1f)) {
-                Column(
-                    modifier = Modifier.padding(start = 8.dp)
-                ) {
+            Column(
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Row {
                     Text(
                         text = player.name,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(
-                        imageVector = if (player.sex.lowercase() == Sex.male.name) Icons.Default.Male else Icons.Default.Female,
+                        imageVector = if (player.sex == Sex.male) Icons.Default.Male else Icons.Default.Female,
                         contentDescription = "Gender",
-                        tint = if (player.sex.lowercase() == Sex.male.name) Color.Blue else Color.Magenta,
-                        modifier = Modifier.size(24.dp)
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
-                Column(
-                    modifier = Modifier.padding(start = 8.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 8.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.level) + ":",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = player.level.toString(),
-                            style = hennyPennyTextStyle,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.power) + ":",
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                        Text(
-                            text = player.power.toString(),
-                            style = hennyPennyTextStyle,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(12.dp)
-                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_level),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(24.dp)
+                    )
                     Text(
-                        text = stringResource(Res.string.total_power),
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = player.level.toString(),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_power),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.padding(start = 16.dp).size(24.dp)
+                    )
+                    Text(
+                        text = player.power.toString(),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_total_power),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.padding(start = 16.dp).size(24.dp)
                     )
                     Text(
                         text = "${player.level + player.power}",
-                        style = hennyPennyTextStyle.copy(fontSize = 24.sp),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 12.dp)
                     )
                 }
             }
@@ -200,13 +295,14 @@ fun PlayerItemPreview() {
         player = Player(
             id = 2,
             name = "Lida",
-            sex = "female",
+            sex = Sex.female,
             level = 2,
             power = 2,
             avatar = "",
         ),
         modifier = Modifier.padding(16.dp),
-        onClick = {}
+        onClick = {},
+        onLongClick = {},
     )
 }
 
