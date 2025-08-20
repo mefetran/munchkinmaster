@@ -1,6 +1,11 @@
 package org.mefetran.munchkinmaster.ui.screen.player
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -9,20 +14,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.mefetran.munchkinmaster.model.Avatar
 import org.mefetran.munchkinmaster.model.Sex
 import org.mefetran.munchkinmaster.repository.MockPlayerRepository
 import org.mefetran.munchkinmaster.repository.PlayerRepository
+import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarComponent
+import org.mefetran.munchkinmaster.ui.screen.avatar.DefaultAvatarComponent
 import org.mefetran.munchkinmaster.util.coroutineScope
 
 interface PlayerComponent {
     val state: Value<PlayerUiState>
+    val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>>
 
     fun onBackClick()
     fun onLevelChange(newValue: Int)
     fun onPowerChange(newValue: Int)
     fun onSexChange()
+    fun onAvatarClick()
 }
 
 class DefaultPlayerComponent(
@@ -32,8 +43,23 @@ class DefaultPlayerComponent(
 ) : PlayerComponent, ComponentContext by componentContext, KoinComponent {
     private val playerRepository: PlayerRepository by inject()
     private val scope = coroutineScope()
+    private val avatarNavigation = SlotNavigation<AvatarConfig>()
     private val _state = MutableValue(PlayerUiState())
     override val state: Value<PlayerUiState> = _state
+    override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = childSlot(
+        source = avatarNavigation,
+        serializer = AvatarConfig.serializer(),
+        handleBackButton = true,
+    ) { config, componentContext ->
+        DefaultAvatarComponent(
+            componentContext = componentContext,
+            avatar = config.currentAvatar,
+            onAvatarChange = { newAvatar ->
+                onAvatarChange(newAvatar)
+            },
+            onFinished = avatarNavigation::dismiss
+        )
+    }
 
     init {
         scope.launch {
@@ -43,6 +69,20 @@ class DefaultPlayerComponent(
                     _state.update { it.copy(player = player) }
                 }
         }
+    }
+
+    private fun onAvatarChange(newAvatar: Avatar) {
+        scope.launch {
+            _state.value.player
+                ?.copy(avatar = newAvatar)
+                ?.let { updated ->
+                    playerRepository.updatePlayer(updated)
+                }
+        }
+    }
+
+    override fun onAvatarClick() {
+        avatarNavigation.activate(AvatarConfig(_state.value.player?.avatar ?: Avatar.female2))
     }
 
     override fun onLevelChange(newValue: Int) {
@@ -80,6 +120,11 @@ class DefaultPlayerComponent(
             }
         }
     }
+
+    @Serializable
+    private data class AvatarConfig(
+        val currentAvatar: Avatar
+    )
 }
 
 class MockPlayerComponent(
@@ -110,6 +155,12 @@ class MockPlayerComponent(
                 }
         }
     }
+
+    override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = MutableValue(
+        ChildSlot<Any, AvatarComponent>(null)
+    )
+
+    override fun onAvatarClick() {}
 
     override fun onPowerChange(newValue: Int) {
         scope.launch {

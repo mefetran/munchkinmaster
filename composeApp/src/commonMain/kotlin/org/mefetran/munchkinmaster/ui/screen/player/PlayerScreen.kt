@@ -1,5 +1,6 @@
 package org.mefetran.munchkinmaster.ui.screen.player
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,9 +49,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
+import munchkinmaster.composeapp.generated.resources.avatar_female_1
 import munchkinmaster.composeapp.generated.resources.ic_battle
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.power
@@ -59,6 +60,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Sex
+import org.mefetran.munchkinmaster.model.getDrawableResource
+import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarModalBottomSheet
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -67,6 +70,7 @@ fun PlayerScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by component.state.subscribeAsState()
+    val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
 
     BackHandler {
         component.onBackClick()
@@ -94,14 +98,21 @@ fun PlayerScreen(
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
-            AsyncImage(
-                model = state.player?.avatar,
+            Image(
+                painter = painterResource(
+                    state.player?.avatar?.getDrawableResource() ?: Res.drawable.avatar_female_1
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
                     .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(bounded = false),
+                        onClick = component::onAvatarClick
+                    )
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -165,6 +176,12 @@ fun PlayerScreen(
             Text(
                 stringResource(Res.string.start_battle),
                 style = MaterialTheme.typography.labelLarge
+            )
+        }
+
+        selectAvatarSlot.child?.let { child ->
+            AvatarModalBottomSheet(
+                component = child.instance,
             )
         }
     }

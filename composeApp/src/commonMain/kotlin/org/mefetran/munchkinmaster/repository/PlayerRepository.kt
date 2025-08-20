@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.mefetran.munchkinmaster.db.PlayerDao
+import org.mefetran.munchkinmaster.model.Avatar
 import org.mefetran.munchkinmaster.model.Player
 import org.mefetran.munchkinmaster.model.Sex
 
@@ -39,7 +40,7 @@ class MockPlayerRepository() : PlayerRepository {
                 sex = Sex.male,
                 level = 1,
                 power = 1,
-                avatar = "",
+                avatar = Avatar.male2,
             ),
             Player(
                 id = 2,
@@ -47,7 +48,7 @@ class MockPlayerRepository() : PlayerRepository {
                 sex = Sex.female,
                 level = 2,
                 power = 2,
-                avatar = "",
+                avatar = Avatar.female2,
             )
         )
     )

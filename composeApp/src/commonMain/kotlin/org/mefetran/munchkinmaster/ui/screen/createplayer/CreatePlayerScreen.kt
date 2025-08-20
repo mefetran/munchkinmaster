@@ -1,5 +1,7 @@
 package org.mefetran.munchkinmaster.ui.screen.createplayer
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,9 +52,12 @@ import munchkinmaster.composeapp.generated.resources.create
 import munchkinmaster.composeapp.generated.resources.enter_name
 import munchkinmaster.composeapp.generated.resources.name
 import munchkinmaster.composeapp.generated.resources.sex
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Sex
+import org.mefetran.munchkinmaster.model.getDrawableResource
+import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.ui.uikit.dialog.ErrorDialog
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -62,6 +69,7 @@ fun CreatePlayerScreen(
     val state by component.state.subscribeAsState()
     val nameTextValue by component.nameTextValue.subscribeAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
 
     BackHandler {
         keyboardController?.hide()
@@ -92,6 +100,27 @@ fun CreatePlayerScreen(
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
+            Image(
+                painter = painterResource(state.selectedAvatar.getDrawableResource()),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 3.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(bounded = false),
+                        onClick = {
+                            component.onAvatarClick()
+                        }
+                    )
+                    .align(Alignment.CenterHorizontally)
+            )
             OutlinedTextField(
                 value = nameTextValue,
                 onValueChange = component::onNameValueChange,
@@ -99,7 +128,7 @@ fun CreatePlayerScreen(
                 placeholder = {
                     Text(text = stringResource(Res.string.enter_name))
                 },
-                label =  {
+                label = {
                     Text(text = stringResource(Res.string.name))
                 },
                 keyboardOptions = KeyboardOptions(
@@ -111,7 +140,7 @@ fun CreatePlayerScreen(
                         keyboardController?.hide()
                     }
                 ),
-                modifier = Modifier.padding(all = 16.dp).fillMaxWidth()
+                modifier = Modifier.padding(all = 16.dp).fillMaxWidth(1f)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -150,6 +179,12 @@ fun CreatePlayerScreen(
                 onDismissRequest = component::hideErrorMessage,
                 onOkClick = component::hideErrorMessage,
                 properties = DialogProperties(dismissOnClickOutside = false)
+            )
+        }
+
+        selectAvatarSlot.child?.let { child ->
+            AvatarModalBottomSheet(
+                component = child.instance,
             )
         }
     }

@@ -1,6 +1,7 @@
 package org.mefetran.munchkinmaster.ui.screen.playerlist
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -44,7 +45,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.cancel
@@ -55,8 +55,10 @@ import munchkinmaster.composeapp.generated.resources.players_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.mefetran.munchkinmaster.model.Avatar
 import org.mefetran.munchkinmaster.model.Player
 import org.mefetran.munchkinmaster.model.Sex
+import org.mefetran.munchkinmaster.model.getDrawableResource
 import org.mefetran.munchkinmaster.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.ui.uikit.utils.conditional
 import org.mefetran.munchkinmaster.ui.uikit.utils.getAndroidContext
@@ -220,9 +222,9 @@ private fun PlayerItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(12.dp).fillMaxWidth()
         ) {
-            AsyncImage(
-                model = player.avatar,
-                contentDescription = "Avatar",
+            Image(
+                painter = painterResource(player.avatar.getDrawableResource()),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(56.dp)
@@ -298,7 +300,7 @@ fun PlayerItemPreview() {
             sex = Sex.female,
             level = 2,
             power = 2,
-            avatar = "",
+            avatar = Avatar.female2,
         ),
         modifier = Modifier.padding(16.dp),
         onClick = {},

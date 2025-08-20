@@ -4,3 +4,4 @@ Goblet icon: https://www.svgrepo.com/svg/264595/goblet-eucharist
 Muscle icon: https://www.svgrepo.com/svg/405671/flexed-biceps-medium-light-skin-tone
 Crossed swords: https://www.svgrepo.com/svg/405157/crossed-swords
 Cattedrale font: https://fonts-online.ru/fonts/cattedrale-rus-penka220, Copyright © 2019 by Kadek Mahardika. All rights reserved.
+Thanks to ChatGPT 5 for awesome avatars.

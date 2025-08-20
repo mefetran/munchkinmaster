@@ -10,5 +10,5 @@ data class Player(
     val sex: Sex,
     val level: Int,
     val power: Int,
-    val avatar: String,
+    val avatar: Avatar,
 )
