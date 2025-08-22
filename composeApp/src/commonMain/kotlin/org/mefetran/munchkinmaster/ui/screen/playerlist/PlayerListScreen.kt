@@ -72,6 +72,9 @@ fun PlayerListScreen(
 ) {
     val playerList by component.playerListState.subscribeAsState()
     val state by component.state.subscribeAsState()
+    val maxLevel = remember(playerList) {
+        playerList.maxOfOrNull { player -> player.level }
+    }
 
     BackHandler(
         enabled = state.isDeleteMode
@@ -153,6 +156,7 @@ fun PlayerListScreen(
             items(playerList) { player ->
                 PlayerItem(
                     player = player,
+                    highlight = player.level == maxLevel,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .conditional(
@@ -160,7 +164,7 @@ fun PlayerListScreen(
                             ifTrue = {
                                 border(
                                     width = 2.dp,
-                                    color = MaterialTheme.colorScheme.error,
+                                    color = MaterialTheme.colorScheme.secondary,
                                     shape = CardDefaults.shape,
                                 )
                             },
@@ -196,6 +200,7 @@ fun PlayerListScreen(
 private fun PlayerItem(
     player: Player,
     modifier: Modifier = Modifier,
+    highlight: Boolean = false,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ) {
@@ -260,6 +265,7 @@ private fun PlayerItem(
                     Text(
                         text = player.level.toString(),
                         style = MaterialTheme.typography.titleSmall,
+                        color = if (highlight) MaterialTheme.colorScheme.error else Color.Unspecified,
                         modifier = Modifier.padding(start = 12.dp)
                     )
                     Icon(
