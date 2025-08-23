@@ -318,6 +318,6 @@ fun PlayerItemPreview() {
 @Composable
 fun PlayerListScreenPreview() {
     PlayerListScreen(
-        component = MockPlayerListComponent()
+        component = FakePlayerListComponent()
     )
 }

@@ -14,7 +14,7 @@ import munchkinmaster.composeapp.generated.resources.error_delete_players
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.model.Player
-import org.mefetran.munchkinmaster.repository.MockPlayerRepository
+import org.mefetran.munchkinmaster.repository.FakePlayerRepository
 import org.mefetran.munchkinmaster.repository.PlayerRepository
 import org.mefetran.munchkinmaster.util.coroutineScope
 import kotlin.getValue
@@ -120,8 +120,8 @@ class DefaultPlayerListComponent(
     }
 }
 
-class MockPlayerListComponent : PlayerListComponent {
-    private val playerRepository = MockPlayerRepository()
+class FakePlayerListComponent : PlayerListComponent {
+    private val playerRepository = FakePlayerRepository()
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState

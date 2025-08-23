@@ -194,6 +194,6 @@ fun CreatePlayerScreen(
 @Composable
 fun CreatePlayerScreenPreview() {
     CreatePlayerScreen(
-        component = MockCreatePlayerComponent()
+        component = FakeCreatePlayerComponent()
     )
 }

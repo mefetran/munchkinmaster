@@ -251,7 +251,7 @@ private fun StatusCard(
 @Composable
 fun PlayerScreenPreview() {
     PlayerScreen(
-        component = MockPlayerComponent(
+        component = FakePlayerComponent(
             playerId = 1,
             onFinished = {},
         ),

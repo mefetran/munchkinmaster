@@ -19,7 +19,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.model.Avatar
 import org.mefetran.munchkinmaster.model.Sex
-import org.mefetran.munchkinmaster.repository.MockPlayerRepository
+import org.mefetran.munchkinmaster.repository.FakePlayerRepository
 import org.mefetran.munchkinmaster.repository.PlayerRepository
 import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.ui.screen.avatar.DefaultAvatarComponent
@@ -127,11 +127,11 @@ class DefaultPlayerComponent(
     )
 }
 
-class MockPlayerComponent(
+class FakePlayerComponent(
     private val playerId: Long,
     private val onFinished: () -> Unit,
 ) : PlayerComponent {
-    private val playerRepository = MockPlayerRepository()
+    private val playerRepository = FakePlayerRepository()
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val _state = MutableValue(PlayerUiState())
     override val state: Value<PlayerUiState> = _state

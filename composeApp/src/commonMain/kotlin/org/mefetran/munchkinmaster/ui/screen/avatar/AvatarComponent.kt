@@ -33,7 +33,7 @@ class DefaultAvatarComponent(
     }
 }
 
-class MockAvatarComponent(
+class FakeAvatarComponent(
     avatar: Avatar,
     private val onFinished: () -> Unit,
 ) : AvatarComponent {

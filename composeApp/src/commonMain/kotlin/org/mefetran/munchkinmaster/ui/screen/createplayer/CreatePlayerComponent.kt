@@ -135,7 +135,7 @@ class DefaultCreatePlayerComponent(
     )
 }
 
-class MockCreatePlayerComponent() : CreatePlayerComponent {
+class FakeCreatePlayerComponent() : CreatePlayerComponent {
     private val _state = MutableValue(CreatePlayerState())
     override val state: Value<CreatePlayerState> = _state
 

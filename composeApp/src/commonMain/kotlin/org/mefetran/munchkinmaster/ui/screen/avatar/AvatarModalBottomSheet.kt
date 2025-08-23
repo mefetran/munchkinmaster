@@ -147,7 +147,7 @@ fun AvatarModalBottomSheetPreview() {
     }
     if (showBottomSheet) {
         AvatarModalBottomSheet(
-            component = MockAvatarComponent(
+            component = FakeAvatarComponent(
                 avatar = Avatar.female1,
                 onFinished = {
                     showBottomSheet = false

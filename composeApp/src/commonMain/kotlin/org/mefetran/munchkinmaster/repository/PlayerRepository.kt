@@ -31,7 +31,7 @@ class DefaultPlayerRepository(
     override suspend fun deletePlayersByIds(playerIds: Set<Long>): Int = playerDao.deletePlayersByIds(playerIds)
 }
 
-class MockPlayerRepository() : PlayerRepository {
+class FakePlayerRepository() : PlayerRepository {
     private val playersFlow = MutableStateFlow(
         listOf(
             Player(
