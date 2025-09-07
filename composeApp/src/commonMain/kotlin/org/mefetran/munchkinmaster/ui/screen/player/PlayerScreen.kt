@@ -136,9 +136,7 @@ fun PlayerScreen(
                         )
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
-
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
@@ -154,15 +152,19 @@ fun PlayerScreen(
                     onValueChange = component::onPowerChange
                 )
             }
-
             Spacer(modifier = Modifier.height(32.dp))
-
-            IconButton(
-                onClick = {},
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(72.dp)
+                    .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape)
                     .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(bounded = false),
+                        onClick = {}
+                    )
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_battle),
@@ -171,7 +173,6 @@ fun PlayerScreen(
                     modifier = Modifier.size(36.dp)
                 )
             }
-
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 stringResource(Res.string.start_battle),
