@@ -59,6 +59,7 @@ import org.mefetran.munchkinmaster.model.Avatar
 import org.mefetran.munchkinmaster.model.Player
 import org.mefetran.munchkinmaster.model.Sex
 import org.mefetran.munchkinmaster.model.getDrawableResource
+import org.mefetran.munchkinmaster.model.totalStrength
 import org.mefetran.munchkinmaster.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.ui.uikit.utils.conditional
 import org.mefetran.munchkinmaster.ui.uikit.utils.getAndroidContext
@@ -286,7 +287,7 @@ private fun PlayerItem(
                         modifier = Modifier.padding(start = 16.dp).size(24.dp)
                     )
                     Text(
-                        text = "${player.level + player.power}",
+                        text = "${player.totalStrength()}",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(start = 12.dp)
                     )
