@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.filled.Male
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,6 +57,7 @@ import org.mefetran.munchkinmaster.model.Sex
 import org.mefetran.munchkinmaster.model.getDrawableResource
 import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.ui.uikit.dialog.ErrorDialog
+import org.mefetran.munchkinmaster.ui.uikit.textfield.TextField
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -67,7 +66,6 @@ fun CreatePlayerScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by component.state.subscribeAsState()
-    val nameTextValue by component.nameTextValue.subscribeAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
 
@@ -121,26 +119,26 @@ fun CreatePlayerScreen(
                     )
                     .align(Alignment.CenterHorizontally)
             )
-            OutlinedTextField(
-                value = nameTextValue,
-                onValueChange = component::onNameValueChange,
-                singleLine = true,
+            Text(
+                text = stringResource(Res.string.name) + ":",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            TextField(
+                state = component.nameState,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                ),
+                onKeyboardAction = { action ->
+                    action()
+                    keyboardController?.hide()
+                },
                 placeholder = {
                     Text(text = stringResource(Res.string.enter_name))
                 },
-                label = {
-                    Text(text = stringResource(Res.string.name))
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                    }
-                ),
-                modifier = Modifier.padding(all = 16.dp).fillMaxWidth(1f)
+                modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp, top = 8.dp)
+                    .fillMaxWidth(1f),
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

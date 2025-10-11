@@ -1,6 +1,6 @@
 package org.mefetran.munchkinmaster.ui.screen.createplayer
 
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.foundation.text.input.TextFieldState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
@@ -28,10 +28,9 @@ import org.mefetran.munchkinmaster.util.coroutineScope
 
 interface CreatePlayerComponent {
     val state: Value<CreatePlayerState>
-    val nameTextValue: Value<TextFieldValue>
+    val nameState: TextFieldState
     val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>>
 
-    fun onNameValueChange(newValue: TextFieldValue)
     fun onCreatePlayerClick()
     fun onBackClick()
     fun onSexChange()
@@ -49,8 +48,9 @@ class DefaultCreatePlayerComponent(
 
     private val _state = MutableValue(CreatePlayerState())
     override val state: Value<CreatePlayerState> = _state
-    private val _nameTextValue = MutableValue(TextFieldValue())
-    override val nameTextValue: Value<TextFieldValue> = _nameTextValue
+
+    override val nameState: TextFieldState = TextFieldState()
+
     override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = childSlot(
         source = avatarNavigation,
         serializer = AvatarConfig.serializer(),
@@ -77,7 +77,7 @@ class DefaultCreatePlayerComponent(
     override fun onCreatePlayerClick() {
         scope.launch {
             val player = Player(
-                name = _nameTextValue.value.text.trim(),
+                name = nameState.text.trim().toString(),
                 sex = _state.value.sex,
                 level = 1,
                 power = 0,
@@ -105,10 +105,6 @@ class DefaultCreatePlayerComponent(
 
     override fun onAvatarClick() {
         avatarNavigation.activate(AvatarConfig(_state.value.selectedAvatar))
-    }
-
-    override fun onNameValueChange(newValue: TextFieldValue) {
-        _nameTextValue.update { newValue }
     }
 
     override fun onBackClick() = onFinished()
@@ -139,8 +135,7 @@ class FakeCreatePlayerComponent() : CreatePlayerComponent {
     private val _state = MutableValue(CreatePlayerState())
     override val state: Value<CreatePlayerState> = _state
 
-    private val _nameTextValue = MutableValue(TextFieldValue())
-    override val nameTextValue: Value<TextFieldValue> = _nameTextValue
+    override val nameState: TextFieldState = TextFieldState()
 
     private fun showErrorMessage() {
         _state.update {
@@ -158,10 +153,6 @@ class FakeCreatePlayerComponent() : CreatePlayerComponent {
 
     override fun onCreatePlayerClick() {
         showErrorMessage()
-    }
-
-    override fun onNameValueChange(newValue: TextFieldValue) {
-        _nameTextValue.update { newValue }
     }
 
     override fun onBackClick() {}

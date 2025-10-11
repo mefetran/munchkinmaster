@@ -18,19 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Male
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +57,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.model.Sex
 import org.mefetran.munchkinmaster.model.getDrawableResource
 import org.mefetran.munchkinmaster.ui.screen.avatar.AvatarModalBottomSheet
+import org.mefetran.munchkinmaster.ui.uikit.card.StatusCard
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -98,6 +94,7 @@ fun PlayerScreen(
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
+
             Image(
                 painter = painterResource(
                     state.player?.avatar?.getDrawableResource() ?: Res.drawable.avatar_female_1
@@ -184,66 +181,6 @@ fun PlayerScreen(
             AvatarModalBottomSheet(
                 component = child.instance,
             )
-        }
-    }
-}
-
-@Composable
-private fun StatusCard(
-    title: String,
-    value: Int,
-    onValueChange: (Int) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .width(140.dp)
-            .height(80.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(title, style = MaterialTheme.typography.labelMedium)
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                IconButton(
-                    onClick = {
-                        onValueChange(value.dec())
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDownward,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = value.toString(),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        onValueChange(value.inc())
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowUpward,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
-            }
         }
     }
 }
