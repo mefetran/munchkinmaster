@@ -11,8 +11,8 @@ import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
 class PlayerRepositoryImpl(
     private val playerStorage: PlayerStorage,
 ) : PlayerRepository {
-    override suspend fun savePlayer(player: Player) =
-        playerStorage.savePlayerEntity(player.toPlayerEntity())
+    override suspend fun createPlayer(player: Player) =
+        playerStorage.createPlayerEntity(player.toPlayerEntity())
 
     override suspend fun updatePlayer(player: Player) =
         playerStorage.updatePlayerEntity(player.toPlayerEntity())

@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.mefetran.munchkinmaster.domain.model.Player
 
 interface PlayerRepository {
-    suspend fun savePlayer(player: Player): Boolean
+    suspend fun createPlayer(player: Player): Boolean
     suspend fun updatePlayer(player: Player): Boolean
     fun getPlayersAsFlow(): Flow<List<Player>>
     fun getPlayerById(playerId: Long): Flow<Player?>

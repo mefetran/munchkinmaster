@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.mefetran.munchkinmaster.data.model.PlayerEntity
 
 interface PlayerStorage {
-    suspend fun savePlayerEntity(playerEntity: PlayerEntity): Boolean
+    suspend fun createPlayerEntity(playerEntity: PlayerEntity): Boolean
     suspend fun updatePlayerEntity(playerEntity: PlayerEntity): Boolean
     fun getPlayerEntitiesAsFlow(): Flow<List<PlayerEntity>>
     fun getPlayerEntityById(playerId: Long): Flow<PlayerEntity?>

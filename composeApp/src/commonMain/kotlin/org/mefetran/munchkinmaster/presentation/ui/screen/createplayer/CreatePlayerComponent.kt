@@ -21,7 +21,7 @@ import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex
-import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.player.CreatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
@@ -42,9 +42,9 @@ class DefaultCreatePlayerComponent(
     componentContext: ComponentContext,
     private val onFinished: () -> Unit
 ) : CreatePlayerComponent, ComponentContext by componentContext, KoinComponent {
-    private val playerRepository: PlayerRepository by inject()
     private val scope = coroutineScope()
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
+    private val createPlayerUseCase: CreatePlayerUseCase by inject()
 
     private val _state = MutableValue(CreatePlayerState())
     override val state: Value<CreatePlayerState> = _state
@@ -83,8 +83,8 @@ class DefaultCreatePlayerComponent(
                 power = 0,
                 avatar = _state.value.selectedAvatar,
             )
-            val successSaved = playerRepository.savePlayer(player)
-            if (!successSaved) {
+            val successCreated = createPlayerUseCase(player)
+            if (!successCreated) {
                 showErrorMessage()
                 return@launch
             }
@@ -149,7 +149,7 @@ class FakeCreatePlayerComponent() : CreatePlayerComponent {
         ChildSlot<Any, AvatarComponent>(null)
     )
 
-    override fun onAvatarClick() { }
+    override fun onAvatarClick() {}
 
     override fun onCreatePlayerClick() {
         showErrorMessage()

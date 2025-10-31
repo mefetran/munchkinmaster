@@ -21,7 +21,8 @@ import org.mefetran.munchkinmaster.data.repository.player.PlayerRepositoryImpl
 import org.mefetran.munchkinmaster.data.storage.inmemory.InMemoryPlayerStorage
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Sex
-import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
@@ -42,9 +43,10 @@ class DefaultPlayerComponent(
     private val playerId: Long,
     private val onFinished: () -> Unit,
 ) : PlayerComponent, ComponentContext by componentContext, KoinComponent {
-    private val playerRepository: PlayerRepository by inject()
     private val scope = coroutineScope()
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
+    private val getPlayerByIdUseCase: GetPlayerByIdUseCase by inject()
+    private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
     private val _state = MutableValue(PlayerUiState())
     override val state: Value<PlayerUiState> = _state
     override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = childSlot(
@@ -64,11 +66,9 @@ class DefaultPlayerComponent(
 
     init {
         scope.launch {
-            playerRepository
-                .getPlayerById(playerId)
-                .collectLatest { player ->
-                    _state.update { it.copy(player = player) }
-                }
+            getPlayerByIdUseCase(playerId).collectLatest { player ->
+                _state.update { it.copy(player = player) }
+            }
         }
     }
 
@@ -77,7 +77,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(avatar = newAvatar)
                 ?.let { updated ->
-                    playerRepository.updatePlayer(updated)
+                    updatePlayerUseCase(updated)
                 }
         }
     }
@@ -91,7 +91,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(level = newValue.coerceIn(1, 10))
                 ?.let { updated ->
-                    playerRepository.updatePlayer(updated)
+                    updatePlayerUseCase(updated)
                 }
         }
     }
@@ -101,7 +101,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(power = newValue)
                 ?.let { updated ->
-                    playerRepository.updatePlayer(updated)
+                    updatePlayerUseCase(updated)
                 }
         }
     }
@@ -117,7 +117,7 @@ class DefaultPlayerComponent(
                         Sex.female -> Sex.male
                     }
                 )
-                playerRepository.updatePlayer(updated)
+                updatePlayerUseCase(updated)
             }
         }
     }

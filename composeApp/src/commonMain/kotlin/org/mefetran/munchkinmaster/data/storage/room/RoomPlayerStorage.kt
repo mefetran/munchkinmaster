@@ -11,7 +11,7 @@ import org.mefetran.munchkinmaster.data.model.room.toPlayerRoomEntity
 class RoomPlayerStorage(
     private val playerDao: PlayerDao
 ) : PlayerStorage {
-    override suspend fun savePlayerEntity(playerEntity: PlayerEntity) =
+    override suspend fun createPlayerEntity(playerEntity: PlayerEntity) =
         playerDao.insert(playerEntity.toPlayerRoomEntity()) >= 0
 
     override suspend fun updatePlayerEntity(playerEntity: PlayerEntity) =

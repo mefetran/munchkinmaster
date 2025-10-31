@@ -16,7 +16,8 @@ import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.data.repository.player.PlayerRepositoryImpl
 import org.mefetran.munchkinmaster.data.storage.inmemory.InMemoryPlayerStorage
 import org.mefetran.munchkinmaster.domain.model.Player
-import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCase
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 import kotlin.getValue
 
@@ -38,8 +39,9 @@ class DefaultPlayerListComponent(
     private val openPlayer: (playerId: Long) -> Unit,
     private val openCreatePlayer: () -> Unit,
 ) : PlayerListComponent, ComponentContext by componentContext, KoinComponent {
-    private val playerRepository: PlayerRepository by inject()
     private val scope = coroutineScope()
+    private val getPlayersUseCase: GetPlayersUseCase by inject()
+    private val deletePlayersByIdsUseCase: DeletePlayersByIdsUseCase by inject()
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState
 
@@ -48,11 +50,9 @@ class DefaultPlayerListComponent(
 
     init {
         scope.launch {
-            playerRepository
-                .getPlayersAsFlow()
-                .collectLatest { players ->
-                    _playerListState.update { players }
-                }
+            getPlayersUseCase().collectLatest { players ->
+                _playerListState.update { players }
+            }
         }
     }
 
@@ -70,8 +70,7 @@ class DefaultPlayerListComponent(
     override fun onDeletePlayers() {
         scope.launch {
             try {
-                val successDeleted =
-                    playerRepository.deletePlayersByIds(_state.value.playerIdsToDelete)
+                val successDeleted = deletePlayersByIdsUseCase(_state.value.playerIdsToDelete)
                 if (!successDeleted) {
                     showErrorMessage()
                 }

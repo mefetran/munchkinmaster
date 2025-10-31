@@ -54,10 +54,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Sex
-import org.mefetran.munchkinmaster.domain.model.getDrawableResource
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.presentation.ui.uikit.textfield.TextField
+import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

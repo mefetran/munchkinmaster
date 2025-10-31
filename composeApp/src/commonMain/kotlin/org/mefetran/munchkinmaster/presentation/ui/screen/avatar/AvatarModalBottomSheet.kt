@@ -44,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Avatar
-import org.mefetran.munchkinmaster.domain.model.getDrawableResource
+import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
