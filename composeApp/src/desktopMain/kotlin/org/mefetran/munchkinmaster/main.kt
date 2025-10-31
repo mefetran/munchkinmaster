@@ -7,7 +7,8 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.mefetran.munchkinmaster.di.initKoin
-import org.mefetran.munchkinmaster.ui.screen.root.DefaultRootComponent
+import org.mefetran.munchkinmaster.presentation.App
+import org.mefetran.munchkinmaster.presentation.ui.screen.root.DefaultRootComponent
 import javax.swing.SwingUtilities
 
 fun main() {

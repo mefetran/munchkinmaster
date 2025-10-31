@@ -3,7 +3,7 @@ package org.mefetran.munchkinmaster
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import org.mefetran.munchkinmaster.db.AppDatabase
+import org.mefetran.munchkinmaster.data.db.AppDatabase
 
 fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
     val appContext = context.applicationContext

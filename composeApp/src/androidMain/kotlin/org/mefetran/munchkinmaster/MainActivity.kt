@@ -5,7 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.arkivanov.decompose.defaultComponentContext
-import org.mefetran.munchkinmaster.ui.screen.root.DefaultRootComponent
+import org.mefetran.munchkinmaster.presentation.App
+import org.mefetran.munchkinmaster.presentation.ui.screen.root.DefaultRootComponent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

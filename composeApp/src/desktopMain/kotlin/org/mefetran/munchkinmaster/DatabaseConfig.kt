@@ -2,7 +2,7 @@ package org.mefetran.munchkinmaster
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import org.mefetran.munchkinmaster.db.AppDatabase
+import org.mefetran.munchkinmaster.data.db.AppDatabase
 import java.io.File
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
