@@ -58,6 +58,7 @@ kotlin {
             implementation(libs.datastore.preferences)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+            implementation(projects.domain)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

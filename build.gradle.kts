@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.google.devtools.ksp) apply false
     alias(libs.plugins.roomGradlePlugin) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 // After updating the Compose dependency,

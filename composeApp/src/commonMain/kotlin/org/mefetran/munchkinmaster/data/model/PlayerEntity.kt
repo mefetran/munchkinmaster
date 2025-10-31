@@ -1,6 +1,5 @@
 package org.mefetran.munchkinmaster.data.model
 
-import org.mefetran.munchkinmaster.data.model.room.PlayerRoomEntity
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex
