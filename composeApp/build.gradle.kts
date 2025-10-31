@@ -9,12 +9,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.google.devtools.ksp)
-    alias(libs.plugins.roomGradlePlugin)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
@@ -57,7 +51,7 @@ kotlin {
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
             implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(projects.data)
             implementation(projects.domain)
         }
         commonTest.dependencies {
@@ -101,8 +95,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-    add("kspAndroid", libs.room.compiler)
-    add("kspDesktop", libs.room.compiler)
 }
 
 compose.desktop {

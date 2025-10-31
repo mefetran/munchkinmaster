@@ -2,17 +2,21 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.roomGradlePlugin)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
-
-    jvm("desktop")
 
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "org.mefetran.munchkinmaster.domain"
+        namespace = "org.mefetran.munchkinmaster.data"
         compileSdk = 36
         minSdk = 24
 
@@ -26,6 +30,8 @@ kotlin {
         }
     }
 
+    jvm("desktop")
+
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
     // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
@@ -38,7 +44,9 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.coroutines)
-                // Add KMP dependencies here
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
+                implementation(projects.domain)
             }
         }
 
@@ -57,7 +65,20 @@ kotlin {
         }
 
         desktopMain.dependencies {
+            implementation(libs.kotlinx.coroutinesSwing)
+        }
 
+        getByName("androidDeviceTest") {
+            dependencies {
+                implementation(libs.androidx.runner)
+                implementation(libs.androidx.core)
+                implementation(libs.androidx.testExt.junit)
+            }
         }
     }
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspDesktop", libs.room.compiler)
 }

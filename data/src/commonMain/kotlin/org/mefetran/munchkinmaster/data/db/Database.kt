@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.mefetran.munchkinmaster.data.model.room.PlayerRoomEntity
 
 @Database(entities = [PlayerRoomEntity::class], version = 1)
