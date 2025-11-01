@@ -83,7 +83,7 @@ class DefaultCreatePlayerComponent(
                 power = 0,
                 avatar = _state.value.selectedAvatar,
             )
-            val successCreated = createPlayerUseCase(player)
+            val successCreated = createPlayerUseCase.execute(CreatePlayerUseCase.Params(player))
             if (!successCreated) {
                 showErrorMessage()
                 return@launch

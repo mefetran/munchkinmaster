@@ -17,6 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -58,6 +60,8 @@ import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBott
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.presentation.ui.uikit.textfield.TextField
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
+
+const val MAX_NAME_LENGTH = 40
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -134,6 +138,7 @@ fun CreatePlayerScreen(
                     action()
                     keyboardController?.hide()
                 },
+                inputTransformation = InputTransformation.maxLength(MAX_NAME_LENGTH),
                 placeholder = {
                     Text(text = stringResource(Res.string.enter_name))
                 },

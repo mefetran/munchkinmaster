@@ -1,9 +1,16 @@
 package org.mefetran.munchkinmaster.domain.usecase.player
 
 import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.UseCase
 
-class DeletePlayersByIdsUseCase(
+interface DeletePlayersByIdsUseCase : UseCase<DeletePlayersByIdsUseCase.Params, Boolean> {
+    data class Params(
+        val playerIds: Set<Long>,
+    )
+}
+
+class DeletePlayersByIdsUseCaseImpl(
     private val playerRepository: PlayerRepository,
-) {
-    suspend operator fun invoke(playerIds: Set<Long>) = playerRepository.deletePlayersByIds(playerIds)
+) : DeletePlayersByIdsUseCase {
+    override suspend fun execute(input: DeletePlayersByIdsUseCase.Params) = playerRepository.deletePlayersByIds(input.playerIds)
 }

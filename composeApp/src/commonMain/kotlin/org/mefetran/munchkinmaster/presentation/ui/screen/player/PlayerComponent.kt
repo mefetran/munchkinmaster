@@ -66,9 +66,11 @@ class DefaultPlayerComponent(
 
     init {
         scope.launch {
-            getPlayerByIdUseCase(playerId).collectLatest { player ->
-                _state.update { it.copy(player = player) }
-            }
+            getPlayerByIdUseCase
+                .execute(GetPlayerByIdUseCase.Params(playerId))
+                .collectLatest { player ->
+                    _state.update { it.copy(player = player) }
+                }
         }
     }
 
@@ -77,7 +79,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(avatar = newAvatar)
                 ?.let { updated ->
-                    updatePlayerUseCase(updated)
+                    updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
                 }
         }
     }
@@ -91,7 +93,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(level = newValue.coerceIn(1, 10))
                 ?.let { updated ->
-                    updatePlayerUseCase(updated)
+                    updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
                 }
         }
     }
@@ -101,7 +103,7 @@ class DefaultPlayerComponent(
             _state.value.player
                 ?.copy(power = newValue)
                 ?.let { updated ->
-                    updatePlayerUseCase(updated)
+                    updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
                 }
         }
     }
@@ -117,7 +119,7 @@ class DefaultPlayerComponent(
                         Sex.female -> Sex.male
                     }
                 )
-                updatePlayerUseCase(updated)
+                updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
             }
         }
     }

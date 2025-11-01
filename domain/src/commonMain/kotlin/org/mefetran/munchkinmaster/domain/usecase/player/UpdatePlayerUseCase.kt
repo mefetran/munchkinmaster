@@ -2,9 +2,16 @@ package org.mefetran.munchkinmaster.domain.usecase.player
 
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.UseCase
 
-class UpdatePlayerUseCase(
+interface UpdatePlayerUseCase : UseCase<UpdatePlayerUseCase.Params, Boolean> {
+    data class Params(
+        val player: Player,
+    )
+}
+
+class UpdatePlayerUseCaseImpl(
     private val playerRepository: PlayerRepository,
-) {
-    suspend operator fun invoke(player: Player) = playerRepository.updatePlayer(player)
+) : UpdatePlayerUseCase {
+    override suspend fun execute(input: UpdatePlayerUseCase.Params) = playerRepository.updatePlayer(input.player)
 }

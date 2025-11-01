@@ -8,5 +8,3 @@ data class Player(
     val power: Int,
     val avatar: Avatar,
 )
-
-fun Player.totalStrength() = level + power

@@ -50,7 +50,7 @@ class DefaultPlayerListComponent(
 
     init {
         scope.launch {
-            getPlayersUseCase().collectLatest { players ->
+            getPlayersUseCase.execute(Unit).collectLatest { players ->
                 _playerListState.update { players }
             }
         }
@@ -70,7 +70,7 @@ class DefaultPlayerListComponent(
     override fun onDeletePlayers() {
         scope.launch {
             try {
-                val successDeleted = deletePlayersByIdsUseCase(_state.value.playerIdsToDelete)
+                val successDeleted = deletePlayersByIdsUseCase.execute(DeletePlayersByIdsUseCase.Params(_state.value.playerIdsToDelete))
                 if (!successDeleted) {
                     showErrorMessage()
                 }

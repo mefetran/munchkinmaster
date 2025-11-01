@@ -58,12 +58,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex
-import org.mefetran.munchkinmaster.domain.model.totalStrength
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.presentation.ui.uikit.utils.conditional
 import org.mefetran.munchkinmaster.presentation.ui.uikit.utils.getAndroidContext
 import org.mefetran.munchkinmaster.presentation.ui.uikit.utils.performHapticFeedback
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
+import org.mefetran.munchkinmaster.presentation.util.totalStrength
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

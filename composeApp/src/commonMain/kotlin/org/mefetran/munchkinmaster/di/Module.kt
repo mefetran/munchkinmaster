@@ -9,10 +9,15 @@ import org.mefetran.munchkinmaster.data.storage.PlayerStorage
 import org.mefetran.munchkinmaster.data.storage.room.RoomPlayerStorage
 import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
 import org.mefetran.munchkinmaster.domain.usecase.player.CreatePlayerUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.CreatePlayerUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCaseImpl
 
 fun commonModule(): Module = module {
     single<PlayerDao> { get<AppDatabase>().getPlayerDao()}
@@ -27,11 +32,11 @@ fun storageModule(): Module = module {
 }
 
 fun useCaseModule(): Module = module {
-    factory { CreatePlayerUseCase(get()) }
-    factory { GetPlayerByIdUseCase(get()) }
-    factory { UpdatePlayerUseCase(get()) }
-    factory { GetPlayersUseCase(get()) }
-    factory { DeletePlayersByIdsUseCase(get()) }
+    factory<CreatePlayerUseCase> { CreatePlayerUseCaseImpl(get()) }
+    factory<GetPlayerByIdUseCase> { GetPlayerByIdUseCaseImpl(get()) }
+    factory<UpdatePlayerUseCase> { UpdatePlayerUseCaseImpl(get()) }
+    factory<GetPlayersUseCase> { GetPlayersUseCaseImpl(get()) }
+    factory<DeletePlayersByIdsUseCase> { DeletePlayersByIdsUseCaseImpl(get()) }
 }
 
 expect fun platformModule(): Module
