@@ -14,6 +14,38 @@ import kotlin.test.assertEquals
 class DeletePlayersByIdsUseCaseTest {
     private lateinit var repository: FakePlayerRepository
     private lateinit var useCase: DeletePlayersByIdsUseCase
+    private val players = buildList {
+        add(
+            Player(
+                id = 0,
+                name = "Denis",
+                sex = Sex.male,
+                level = 5,
+                power = 6,
+                avatar = Avatar.male1
+            )
+        )
+        add(
+            Player(
+                id = 1,
+                name = "Lida",
+                sex = Sex.female,
+                level = 6,
+                power = 5,
+                avatar = Avatar.female1
+            )
+        )
+        add(
+            Player(
+                id = 2,
+                name = "Kate",
+                sex = Sex.female,
+                level = 1,
+                power = 0,
+                avatar = Avatar.female4
+            )
+        )
+    }
 
     @BeforeTest
     fun before() {
@@ -24,38 +56,7 @@ class DeletePlayersByIdsUseCaseTest {
     @Test
     fun `Should success delete players by their ids`() = runTest {
         // arrange
-        repository.players = buildList {
-            add(
-                Player(
-                    id = 0,
-                    name = "Denis",
-                    sex = Sex.male,
-                    level = 5,
-                    power = 6,
-                    avatar = Avatar.male1
-                )
-            )
-            add(
-                Player(
-                    id = 1,
-                    name = "Lida",
-                    sex = Sex.female,
-                    level = 6,
-                    power = 5,
-                    avatar = Avatar.female1
-                )
-            )
-            add(
-                Player(
-                    id = 2,
-                    name = "Kate",
-                    sex = Sex.female,
-                    level = 1,
-                    power = 0,
-                    avatar = Avatar.female4
-                )
-            )
-        }
+        repository.players = players
         val size = repository.players.count()
         val playerIds = buildSet {
             add(0L)
