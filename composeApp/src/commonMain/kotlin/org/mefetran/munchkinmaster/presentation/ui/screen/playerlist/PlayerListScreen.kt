@@ -78,7 +78,7 @@ fun PlayerListScreen(
     }
 
     BackHandler(
-        enabled = state.isDeleteMode
+        enabled = state is PlayerListState.DeleteMode
     ) {
         component.onDeleteModeOff()
     }
@@ -101,10 +101,10 @@ fun PlayerListScreen(
                         modifier = Modifier.weight(1f)
                     )
                     AnimatedContent(
-                        targetState = state.isDeleteMode
+                        targetState = state
                     ) { currentState ->
                         when (currentState) {
-                            true -> {
+                            is PlayerListState.DeleteMode -> {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
@@ -121,9 +121,9 @@ fun PlayerListScreen(
                                         modifier = Modifier.padding(start = 8.dp)
                                     ) {
                                         Row {
-                                            if (state.playerIdsToDelete.isNotEmpty()) {
+                                            if (currentState.playerIdsToDelete.isNotEmpty()) {
                                                 Text(
-                                                    text = "${state.playerIdsToDelete.size}",
+                                                    text = "${currentState.playerIdsToDelete.size}",
                                                     style = MaterialTheme.typography.titleMedium.copy(
                                                         color = MaterialTheme.colorScheme.primary
                                                     ),
@@ -138,8 +138,7 @@ fun PlayerListScreen(
                                     }
                                 }
                             }
-
-                            false -> {
+                            is PlayerListState.MainState -> {
                                 IconButton(
                                     onClick = component::onAddPlayerClick,
                                 ) {
@@ -161,7 +160,10 @@ fun PlayerListScreen(
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .conditional(
-                            condition = state.playerIdsToDelete.contains(player.id),
+                            condition = when (val currentState = state) {
+                                is PlayerListState.DeleteMode -> currentState.playerIdsToDelete.contains(player.id)
+                                is PlayerListState.MainState -> false
+                            },
                             ifTrue = {
                                 border(
                                     width = 2.dp,
@@ -171,15 +173,18 @@ fun PlayerListScreen(
                             },
                         ),
                     onClick = {
-                        when (state.isDeleteMode) {
-                            true -> component.onAddToDelete(player.id)
-                            false -> component.onPlayerClick(player.id)
+                        when (state) {
+                            is PlayerListState.DeleteMode -> component.onAddToDelete(player.id)
+                            is PlayerListState.MainState -> component.onPlayerClick(player.id)
                         }
                     },
                     onLongClick = {
-                        if (!state.isDeleteMode) {
-                            component.onDeleteModeOn()
-                            component.onAddToDelete(player.id)
+                        when (state) {
+                            is PlayerListState.DeleteMode -> {}
+                            is PlayerListState.MainState -> {
+                                component.onDeleteModeOn()
+                                component.onAddToDelete(player.id)
+                            }
                         }
                     }
                 )
@@ -315,7 +320,7 @@ fun PlayerItemPreview() {
     )
 }
 
-@Preview
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
 fun PlayerListScreenPreview() {
     PlayerListScreen(

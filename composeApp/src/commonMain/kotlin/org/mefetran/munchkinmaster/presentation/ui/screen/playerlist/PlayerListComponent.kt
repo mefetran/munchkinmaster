@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.error_delete_players
+import org.jetbrains.compose.resources.StringResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.data.repository.player.PlayerRepositoryImpl
@@ -45,7 +46,7 @@ class DefaultPlayerListComponent(
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState
 
-    private val _state = MutableValue(PlayerListState())
+    private val _state = MutableValue<PlayerListState>(PlayerListState.MainState())
     override val state: Value<PlayerListState> = _state
 
     init {
@@ -56,11 +57,16 @@ class DefaultPlayerListComponent(
         }
     }
 
-    private fun showErrorMessage() {
-        _state.update {
-            it.copy(
-                errorMessageResId = Res.string.error_delete_players
-            )
+    private fun reduce(transform: (PlayerListState) -> PlayerListState) {
+        _state.update(transform)
+    }
+
+    private fun showErrorMessage(errorMessageResId: StringResource) {
+        _state.update { current ->
+            when (current) {
+                is PlayerListState.DeleteMode -> current.copy(errorMessageResId = errorMessageResId)
+                is PlayerListState.MainState -> current.copy(errorMessageResId = errorMessageResId)
+            }
         }
     }
 
@@ -68,55 +74,59 @@ class DefaultPlayerListComponent(
 
     override fun onAddPlayerClick() = openCreatePlayer()
     override fun onDeletePlayers() {
+        val currentState = _state.value
+        if (currentState !is PlayerListState.DeleteMode) return
+
         scope.launch {
             try {
-                val successDeleted = deletePlayersByIdsUseCase.execute(DeletePlayersByIdsUseCase.Params(_state.value.playerIdsToDelete))
+                val successDeleted =
+                    deletePlayersByIdsUseCase.execute(DeletePlayersByIdsUseCase.Params(currentState.playerIdsToDelete))
+
                 if (!successDeleted) {
-                    showErrorMessage()
+                    showErrorMessage(Res.string.error_delete_players)
                 }
-                _state.update {
-                    it.copy(
-                        isDeleteMode = false,
-                        playerIdsToDelete = emptySet()
-                    )
-                }
+
+                reduce { PlayerListState.MainState() }
             } catch (e: Exception) {
                 e.printStackTrace()
-                showErrorMessage()
+                showErrorMessage(Res.string.error_delete_players)
             }
         }
     }
 
     override fun onAddToDelete(playerId: Long) {
-        val newSet = _state.value.playerIdsToDelete.toMutableSet()
+        val currentState = _state.value
+        if (currentState !is PlayerListState.DeleteMode) return
+
+        val newSet = currentState.playerIdsToDelete
         if (newSet.contains(playerId)) {
             newSet.remove(playerId)
         } else {
             newSet.add(playerId)
         }
 
-        _state.update {
-            it.copy(
-                isDeleteMode = newSet.isNotEmpty(),
-                playerIdsToDelete = newSet
-            )
+        reduce {
+            if (newSet.isNotEmpty()) {
+                it
+            } else PlayerListState.MainState()
         }
     }
 
     override fun hideErrorMessage() {
-        _state.update {
-            it.copy(
-                errorMessageResId = null
-            )
+        _state.update { current ->
+            when (current) {
+                is PlayerListState.DeleteMode -> current.copy(errorMessageResId = null)
+                is PlayerListState.MainState -> current.copy(errorMessageResId = null)
+            }
         }
     }
 
     override fun onDeleteModeOn() {
-        _state.update { it.copy(isDeleteMode = true, playerIdsToDelete = emptySet()) }
+        reduce { PlayerListState.DeleteMode() }
     }
 
     override fun onDeleteModeOff() {
-        _state.update { it.copy(isDeleteMode = false, playerIdsToDelete = emptySet()) }
+        reduce { PlayerListState.MainState() }
     }
 }
 
@@ -126,29 +136,34 @@ class FakePlayerListComponent : PlayerListComponent {
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState
 
-    private val _state = MutableValue(PlayerListState())
+    private val _state = MutableValue<PlayerListState>(PlayerListState.MainState())
     override val state: Value<PlayerListState> = _state
+
+    private fun reduce(transform: (PlayerListState) -> PlayerListState) {
+        _state.update(transform)
+    }
 
     override fun onDeletePlayers() {
         TODO("Not yet implemented")
     }
 
     override fun onAddToDelete(playerId: Long) {
-        val newSet = _state.value.playerIdsToDelete.toMutableSet()
+        val currentState = _state.value
+        if (currentState !is PlayerListState.DeleteMode) return
+
+        val newSet = currentState.playerIdsToDelete
         if (newSet.contains(playerId)) {
             newSet.remove(playerId)
         } else {
             newSet.add(playerId)
         }
 
-        _state.update {
-            it.copy(
-                isDeleteMode = newSet.isNotEmpty(),
-                playerIdsToDelete = newSet
-            )
+        reduce {
+            if (newSet.isNotEmpty()) {
+                it
+            } else PlayerListState.MainState()
         }
     }
-
 
     init {
         scope.launch {
@@ -168,10 +183,11 @@ class FakePlayerListComponent : PlayerListComponent {
     }
 
     override fun onDeleteModeOn() {
-        _state.update { it.copy(isDeleteMode = true, playerIdsToDelete = emptySet()) }
+        reduce { PlayerListState.DeleteMode() }
     }
 
     override fun onDeleteModeOff() {
-        _state.update { it.copy(isDeleteMode = false, playerIdsToDelete = emptySet()) }
+        reduce { PlayerListState.MainState() }
     }
+
 }
