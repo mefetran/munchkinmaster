@@ -48,6 +48,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.avatar_female_1
 import munchkinmaster.composeapp.generated.resources.ic_battle
+import munchkinmaster.composeapp.generated.resources.ic_total_power
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.power
 import munchkinmaster.composeapp.generated.resources.start_battle
@@ -58,6 +59,7 @@ import org.mefetran.munchkinmaster.domain.model.Sex
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.StatusCard
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
+import org.mefetran.munchkinmaster.presentation.util.totalStrength
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -131,6 +133,22 @@ fun PlayerScreen(
                             indication = ripple(bounded = true),
                             onClick = component::onSexChange
                         )
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_total_power),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = "${state.player?.totalStrength() ?: 0}",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 12.dp)
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
