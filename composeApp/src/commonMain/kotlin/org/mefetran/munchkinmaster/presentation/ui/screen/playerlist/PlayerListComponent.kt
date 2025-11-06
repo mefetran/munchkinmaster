@@ -33,12 +33,14 @@ interface PlayerListComponent {
     fun hideErrorMessage()
     fun onDeleteModeOn()
     fun onDeleteModeOff()
+    fun onSettingsClick()
 }
 
 class DefaultPlayerListComponent(
     componentContext: ComponentContext,
     private val openPlayer: (playerId: Long) -> Unit,
     private val openCreatePlayer: () -> Unit,
+    private val openSettings: () -> Unit,
 ) : PlayerListComponent, ComponentContext by componentContext, KoinComponent {
     private val scope = coroutineScope()
     private val getPlayersUseCase: GetPlayersUseCase by inject()
@@ -128,6 +130,10 @@ class DefaultPlayerListComponent(
     override fun onDeleteModeOff() {
         reduce { PlayerListState.MainState() }
     }
+
+    override fun onSettingsClick() {
+        openSettings()
+    }
 }
 
 class FakePlayerListComponent : PlayerListComponent {
@@ -190,4 +196,7 @@ class FakePlayerListComponent : PlayerListComponent {
         reduce { PlayerListState.MainState() }
     }
 
+    override fun onSettingsClick() {
+
+    }
 }

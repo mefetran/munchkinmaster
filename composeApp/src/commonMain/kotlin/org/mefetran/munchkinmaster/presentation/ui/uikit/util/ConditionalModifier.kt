@@ -1,4 +1,4 @@
-package org.mefetran.munchkinmaster.presentation.ui.uikit.utils
+package org.mefetran.munchkinmaster.presentation.ui.uikit.util
 
 import androidx.compose.ui.Modifier
 

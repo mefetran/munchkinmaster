@@ -178,7 +178,9 @@ fun PlayerScreen(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = ripple(bounded = false),
-                        onClick = {}
+                        onClick = {
+                            component.onBattleClick()
+                        }
                     )
             ) {
                 Icon(

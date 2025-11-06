@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.data.repository.player.PlayerRepositoryImpl
@@ -25,10 +24,11 @@ import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
+import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 
 interface PlayerComponent {
-    val state: Value<PlayerUiState>
+    val state: Value<PlayerState>
     val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>>
 
     fun onBackClick()
@@ -36,28 +36,31 @@ interface PlayerComponent {
     fun onPowerChange(newValue: Int)
     fun onSexChange()
     fun onAvatarClick()
+    fun onBattleClick()
 }
 
 class DefaultPlayerComponent(
     componentContext: ComponentContext,
     private val playerId: Long,
     private val onFinished: () -> Unit,
+    private val onStartBattle: () -> Unit,
 ) : PlayerComponent, ComponentContext by componentContext, KoinComponent {
     private val scope = coroutineScope()
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
     private val getPlayerByIdUseCase: GetPlayerByIdUseCase by inject()
     private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
-    private val _state = MutableValue(PlayerUiState())
-    override val state: Value<PlayerUiState> = _state
+    private val _state = MutableValue(PlayerState())
+    override val state: Value<PlayerState> = _state
     override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = childSlot(
         source = avatarNavigation,
         serializer = AvatarConfig.serializer(),
+        key = "SelectAvatarSlot",
         handleBackButton = true,
     ) { config, componentContext ->
         DefaultAvatarComponent(
             componentContext = componentContext,
             avatar = config.currentAvatar,
-            onAvatarChange = { newAvatar ->
+            onAvatarChange = { newAvatar, _ ->
                 onAvatarChange(newAvatar)
             },
             onFinished = avatarNavigation::dismiss
@@ -124,10 +127,9 @@ class DefaultPlayerComponent(
         }
     }
 
-    @Serializable
-    private data class AvatarConfig(
-        val currentAvatar: Avatar
-    )
+    override fun onBattleClick() {
+        onStartBattle()
+    }
 }
 
 class FakePlayerComponent(
@@ -136,8 +138,8 @@ class FakePlayerComponent(
 ) : PlayerComponent {
     private val playerRepository = PlayerRepositoryImpl(InMemoryPlayerStorage())
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    private val _state = MutableValue(PlayerUiState())
-    override val state: Value<PlayerUiState> = _state
+    private val _state = MutableValue(PlayerState())
+    override val state: Value<PlayerState> = _state
 
     init {
         scope.launch {
@@ -189,5 +191,9 @@ class FakePlayerComponent(
                 playerRepository.updatePlayer(updated)
             }
         }
+    }
+
+    override fun onBattleClick() {
+
     }
 }

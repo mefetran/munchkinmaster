@@ -85,7 +85,7 @@ private val darkScheme = darkColorScheme(
 @Composable
 fun MunchkinMasterTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         darkTheme -> darkScheme

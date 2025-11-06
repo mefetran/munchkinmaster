@@ -31,7 +31,7 @@ class InMemoryPlayerStorage : PlayerStorage {
     )
 
     override suspend fun createPlayerEntity(playerEntity: PlayerEntity): Boolean {
-        playersFlow.value = playersFlow.value + playerEntity
+        playersFlow.value += playerEntity
         return playersFlow.value.contains(playerEntity)
     }
 

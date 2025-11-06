@@ -17,4 +17,12 @@
     <string name="cancel">Отмена</string>
     <string name="close">Закрыть</string>
     <string name="select_avatar_title">Выберите аватар</string>
+    <string name="select_player_title">Выберите игрока</string>
+    <string name="modificator">Модификатор</string>
+    <string name="monster">Монстр</string>
+    <string name="settings_title">Настройки</string>
+    <string name="theme">Тема</string>
+    <string name="system_theme">Системная</string>
+    <string name="light">Светлая</string>
+    <string name="dark">Тёмная</string>
 </resources>

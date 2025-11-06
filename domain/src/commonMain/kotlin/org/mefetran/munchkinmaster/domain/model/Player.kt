@@ -7,4 +7,5 @@ data class Player(
     val level: Int,
     val power: Int,
     val avatar: Avatar,
+    val modificator: Int = 0,
 )

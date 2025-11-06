@@ -2,6 +2,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val appVersion = "0.5.0"
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -48,8 +50,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensions.compose)
             implementation(libs.essenty.lifecycle)
-            implementation(libs.datastore)
-            implementation(libs.datastore.preferences)
+            api(libs.datastore)
+            api(libs.datastore.preferences)
             implementation(libs.room.runtime)
             implementation(projects.data)
             implementation(projects.domain)
@@ -75,7 +77,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "0.0.1"
+        versionName = appVersion
     }
     packaging {
         resources {
@@ -105,7 +107,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage,
                 TargetFormat.Rpm)
             packageName = "org.mefetran.munchkinmaster"
-            packageVersion = "0.0.1"
+            packageVersion = appVersion
             linux {
                 iconFile.set(project.file("../media/appicon/app_icon.png"))
             }

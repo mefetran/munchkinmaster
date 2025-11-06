@@ -59,7 +59,7 @@ class DefaultCreatePlayerComponent(
         DefaultAvatarComponent(
             componentContext = componentContext,
             avatar = config.currentAvatar,
-            onAvatarChange = { newAvatar ->
+            onAvatarChange = { newAvatar, _ ->
                 onAvatarChange(newAvatar)
             },
             onFinished = avatarNavigation::dismiss

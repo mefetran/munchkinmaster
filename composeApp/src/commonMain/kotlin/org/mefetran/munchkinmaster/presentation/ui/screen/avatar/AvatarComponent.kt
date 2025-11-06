@@ -16,7 +16,8 @@ interface AvatarComponent {
 class DefaultAvatarComponent(
     componentContext: ComponentContext,
     avatar: Avatar,
-    private val onAvatarChange: (avatar: Avatar) -> Unit,
+    private val playerId: Long? = null,
+    private val onAvatarChange: (avatar: Avatar, playerId: Long?) -> Unit,
     private val onFinished: () -> Unit,
 ) : AvatarComponent, ComponentContext by componentContext {
     private val _state = MutableValue(AvatarState(avatar))
@@ -24,7 +25,7 @@ class DefaultAvatarComponent(
 
     override fun onAvatarClick(newAvatar: Avatar) {
         _state.update { AvatarState(newAvatar) }
-        onAvatarChange(newAvatar)
+        onAvatarChange(newAvatar, playerId)
     }
 
     override fun onClose() {
