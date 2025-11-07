@@ -19,6 +19,7 @@ import org.mefetran.munchkinmaster.data.storage.inmemory.InMemoryPlayerStorage
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 import kotlin.getValue
 
@@ -34,6 +35,7 @@ interface PlayerListComponent {
     fun onDeleteModeOn()
     fun onDeleteModeOff()
     fun onSettingsClick()
+    fun onResetPlayers()
 }
 
 class DefaultPlayerListComponent(
@@ -45,6 +47,7 @@ class DefaultPlayerListComponent(
     private val scope = coroutineScope()
     private val getPlayersUseCase: GetPlayersUseCase by inject()
     private val deletePlayersByIdsUseCase: DeletePlayersByIdsUseCase by inject()
+    private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState
 
@@ -134,6 +137,23 @@ class DefaultPlayerListComponent(
     override fun onSettingsClick() {
         openSettings()
     }
+
+    override fun onResetPlayers() {
+        scope.launch {
+            val players = _playerListState.value
+
+            players.forEach { player ->
+                updatePlayerUseCase.execute(
+                    UpdatePlayerUseCase.Params(
+                        player.copy(
+                            level = 1,
+                            power = 0,
+                        )
+                    )
+                )
+            }
+        }
+    }
 }
 
 class FakePlayerListComponent : PlayerListComponent {
@@ -150,7 +170,6 @@ class FakePlayerListComponent : PlayerListComponent {
     }
 
     override fun onDeletePlayers() {
-        TODO("Not yet implemented")
     }
 
     override fun onAddToDelete(playerId: Long) {
@@ -185,7 +204,6 @@ class FakePlayerListComponent : PlayerListComponent {
 
     override fun onAddPlayerClick() {}
     override fun hideErrorMessage() {
-        TODO("Not yet implemented")
     }
 
     override fun onDeleteModeOn() {
@@ -197,6 +215,10 @@ class FakePlayerListComponent : PlayerListComponent {
     }
 
     override fun onSettingsClick() {
+
+    }
+
+    override fun onResetPlayers() {
 
     }
 }

@@ -25,4 +25,5 @@
     <string name="system_theme">System</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="kill">Kill</string>
 </resources>

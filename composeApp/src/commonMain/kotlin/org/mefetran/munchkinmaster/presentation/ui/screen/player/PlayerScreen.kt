@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +48,7 @@ import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.avatar_female_1
 import munchkinmaster.composeapp.generated.resources.ic_battle
 import munchkinmaster.composeapp.generated.resources.ic_total_power
+import munchkinmaster.composeapp.generated.resources.kill
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.power
 import munchkinmaster.composeapp.generated.resources.start_battle
@@ -84,17 +84,28 @@ fun PlayerScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
-                onClick = component::onBackClick,
-                modifier = Modifier.padding(
-                    top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
-                ).align(Alignment.Start)
+            Box(
+                Modifier.fillMaxWidth().statusBarsPadding()
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
+                IconButton(
+                    onClick = component::onBackClick,
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                TextButton(
+                    onClick = component::onKillClick,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.kill),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
 
             Image(

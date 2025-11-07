@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ReplayCircleFilled
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -127,6 +128,17 @@ fun PlayerListScreen(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
+                                    if (playerList.isNotEmpty()) {
+                                        IconButton(
+                                            onClick = component::onResetPlayers,
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.ReplayCircleFilled,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                    }
                                     IconButton(
                                         onClick = component::onAddPlayerClick,
                                     ) {

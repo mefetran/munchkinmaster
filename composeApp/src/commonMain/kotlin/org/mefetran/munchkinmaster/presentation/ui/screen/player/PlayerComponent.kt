@@ -39,6 +39,7 @@ interface PlayerComponent {
     fun onSexChange()
     fun onAvatarClick()
     fun onBattleClick()
+    fun onKillClick()
 }
 
 class DefaultPlayerComponent(
@@ -132,6 +133,22 @@ class DefaultPlayerComponent(
     override fun onBattleClick() {
         onStartBattle()
     }
+
+    override fun onKillClick() {
+        scope.launch {
+            val player = _state.value.player
+            player?.let {
+                updatePlayerUseCase.execute(
+                    UpdatePlayerUseCase.Params(
+                        player.copy(
+                            level = 1,
+                            power = 0,
+                        )
+                    )
+                )
+            }
+        }
+    }
 }
 
 class FakePlayerComponent(
@@ -196,6 +213,10 @@ class FakePlayerComponent(
     }
 
     override fun onBattleClick() {
+
+    }
+
+    override fun onKillClick() {
 
     }
 }
