@@ -27,6 +27,8 @@ import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarCo
 import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 
+private const val DefaultMaxLevel = 10
+
 interface PlayerComponent {
     val state: Value<PlayerState>
     val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>>
@@ -94,7 +96,7 @@ class DefaultPlayerComponent(
     override fun onLevelChange(newValue: Int) {
         scope.launch {
             _state.value.player
-                ?.copy(level = newValue.coerceIn(1, 10))
+                ?.copy(level = newValue.coerceIn(1, DefaultMaxLevel))
                 ?.let { updated ->
                     updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
                 }
@@ -154,7 +156,7 @@ class FakePlayerComponent(
     override fun onLevelChange(newValue: Int) {
         scope.launch {
             _state.value.player
-                ?.copy(level = newValue.coerceIn(1, 10))
+                ?.copy(level = newValue.coerceIn(1, DefaultMaxLevel))
                 ?.let { updated ->
                     playerRepository.updatePlayer(updated)
                 }

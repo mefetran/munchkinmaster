@@ -61,7 +61,7 @@ import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.presentation.ui.uikit.textfield.TextField
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 
-const val MAX_NAME_LENGTH = 40
+const val MaxNameLength = 40
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -138,7 +138,7 @@ fun CreatePlayerScreen(
                     action()
                     keyboardController?.hide()
                 },
-                inputTransformation = InputTransformation.maxLength(MAX_NAME_LENGTH),
+                inputTransformation = InputTransformation.maxLength(MaxNameLength),
                 placeholder = {
                     Text(text = stringResource(Res.string.enter_name))
                 },

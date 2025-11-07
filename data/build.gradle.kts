@@ -4,6 +4,31 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.roomGradlePlugin)
+    alias(libs.plugins.detekt)
+}
+
+
+detekt {
+    source.setFrom(
+        files(
+            "src/commonMain/kotlin",
+            "src/commonTest/kotlin",
+            "src/androidMain/kotlin",
+            "src/androidUnitTest/kotlin",
+            "src/desktopMain/kotlin",
+            "src/desktopTest/kotlin",
+        )
+    )
+    buildUponDefaultConfig = true
+    config.setFrom("$projectDir/config/detekt.yml")
+    reports {
+        html.required.set(true)
+        html.outputLocation.set(file("build/reports/detekt/detekt_data.html"))
+
+        xml.required.set(true)
+        txt.required.set(false)
+        sarif.required.set(false)
+    }
 }
 
 room {

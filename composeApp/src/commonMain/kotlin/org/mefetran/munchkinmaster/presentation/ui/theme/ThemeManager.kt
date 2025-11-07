@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-private const val IS_DARK_THEME = "is_dark_theme"
-private const val IS_SYSTEM_THEME = "is_system_theme"
+private const val IsDarkTheme = "is_dark_theme"
+private const val IsSystemTheme = "is_system_theme"
 
 data class ThemeData(
     val isDarkTheme: Boolean = true,
@@ -30,8 +30,8 @@ object ThemeManager: KoinComponent {
 
     init {
         scope.launch {
-            val isDarkThemeKey = booleanPreferencesKey(IS_DARK_THEME)
-            val isSystemThemeKey = booleanPreferencesKey(IS_SYSTEM_THEME)
+            val isDarkThemeKey = booleanPreferencesKey(IsDarkTheme)
+            val isSystemThemeKey = booleanPreferencesKey(IsSystemTheme)
             val isDarkTheme = dataStore.data.first()[isDarkThemeKey]
             val isSystemTheme = dataStore.data.first()[isSystemThemeKey]
 
@@ -48,8 +48,8 @@ object ThemeManager: KoinComponent {
         scope.launch {
             _themeDataState.update { newThemeData }
 
-            val isDarkThemeKey = booleanPreferencesKey(IS_DARK_THEME)
-            val isSystemThemeKey = booleanPreferencesKey(IS_SYSTEM_THEME)
+            val isDarkThemeKey = booleanPreferencesKey(IsDarkTheme)
+            val isSystemThemeKey = booleanPreferencesKey(IsSystemTheme)
 
             dataStore.edit { mutablePreferences ->
                 mutablePreferences[isDarkThemeKey] = newThemeData.isDarkTheme

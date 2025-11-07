@@ -46,6 +46,9 @@ import org.mefetran.munchkinmaster.presentation.ui.uikit.util.performHapticFeedb
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 import org.mefetran.munchkinmaster.presentation.util.totalStrength
 
+private const val DropShadowRadius = 45f
+private const val InnerShadowRadius = 75f
+
 @Composable
 fun PlayerItem(
     player: Player,
@@ -69,7 +72,7 @@ fun PlayerItem(
                     dropShadow(
                         shape = CardDefaults.shape
                     ) {
-                        radius = 45f
+                        radius = DropShadowRadius
                         color = glowColor
                     }
                 }
@@ -91,7 +94,7 @@ fun PlayerItem(
                     innerShadow(
                         shape = CardDefaults.shape
                     ) {
-                        radius = 75f
+                        radius = InnerShadowRadius
                         color = glowColor
                     }
                 }

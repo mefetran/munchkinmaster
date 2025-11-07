@@ -1,3 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -12,6 +15,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.android.lint) apply false
+    alias(libs.plugins.detekt) apply false
 }
 
 // After updating the Compose dependency,
@@ -32,6 +36,27 @@ tasks.register("clean") {
             println("Skiko cache removed")
         } else {
             println("No Skiko cache found — nothing to clean")
+        }
+    }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "1.8"
+}
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = "1.8"
+}
+
+subprojects {
+    plugins.withId("io.gitlab.arturbosch.detekt") {
+        tasks.withType<Detekt>().configureEach {
+            val moduleName = this.project.name
+            reports {
+                html.required.set(true)
+                html.outputLocation.set(
+                    file("$buildDir/reports/detekt/${moduleName}.html")
+                )
+            }
         }
     }
 }

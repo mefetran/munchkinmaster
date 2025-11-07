@@ -96,7 +96,8 @@ fun PlayerListScreen(
                                     ) {
                                         Text(
                                             text = stringResource(Res.string.cancel),
-                                            style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary),
+                                            style = MaterialTheme.typography.titleMedium
+                                                .copy(color = MaterialTheme.colorScheme.primary),
                                         )
                                     }
                                     IconButton(
@@ -121,6 +122,7 @@ fun PlayerListScreen(
                                     }
                                 }
                             }
+
                             is PlayerListState.MainState -> {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -157,7 +159,10 @@ fun PlayerListScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .conditional(
                             condition = when (val currentState = state) {
-                                is PlayerListState.DeleteMode -> currentState.playerIdsToDelete.contains(player.id)
+                                is PlayerListState.DeleteMode -> currentState.playerIdsToDelete.contains(
+                                    player.id
+                                )
+
                                 is PlayerListState.MainState -> false
                             },
                             ifTrue = {

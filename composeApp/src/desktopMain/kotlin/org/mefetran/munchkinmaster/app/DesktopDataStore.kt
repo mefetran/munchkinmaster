@@ -14,5 +14,5 @@ fun getDesktopDataStorePath(appName: String): String {
 
     if (!baseDir.exists()) baseDir.mkdirs()
 
-    return File(baseDir, DATA_STORE_FILE_NAME).absolutePath
+    return File(baseDir, DataStoreFileName).absolutePath
 }

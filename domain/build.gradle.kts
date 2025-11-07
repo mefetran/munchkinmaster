@@ -3,6 +3,23 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlinx.kover)
+    alias(libs.plugins.detekt)
+}
+
+
+detekt {
+    source.setFrom(
+        files(
+            "src/commonMain/kotlin",
+            "src/commonTest/kotlin",
+            "src/androidMain/kotlin",
+            "src/androidUnitTest/kotlin",
+            "src/desktopMain/kotlin",
+            "src/desktopTest/kotlin",
+        )
+    )
+    buildUponDefaultConfig = true
+    config.setFrom("$projectDir/config/detekt.yml")
 }
 
 kotlin {

@@ -52,6 +52,8 @@ import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.SelectPla
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattleMonsterCard
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattlePlayerCard
 
+private const val ArrowRotateDegrees = 180f
+
 @Composable
 fun BattleScreen(
     component: BattleComponent,
@@ -246,10 +248,10 @@ fun BattleArrowIndicator(
 
     LaunchedEffect(isPlayersWinning) {
         if (initialized) {
-            rotationOffset += 180f
+            rotationOffset += ArrowRotateDegrees
         } else {
             initialized = true
-            rotationOffset = if (isPlayersWinning) 0f else 180f
+            rotationOffset = if (isPlayersWinning) 0f else ArrowRotateDegrees
         }
     }
 

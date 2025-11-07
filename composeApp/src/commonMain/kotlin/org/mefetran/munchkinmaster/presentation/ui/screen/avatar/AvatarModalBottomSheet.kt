@@ -89,7 +89,8 @@ fun AvatarModalBottomSheet(
                             .clip(CircleShape)
                             .border(
                                 width = 3.dp,
-                                color = if (state.selectedAvatar == avatar) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                                color = if (state.selectedAvatar == avatar) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurface,
                                 shape = CircleShape
                             )
                             .clickable(
