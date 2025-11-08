@@ -78,14 +78,116 @@ fun PlayerScreen(
         color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize()
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Box(contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(
+                        state.player?.avatar?.getDrawableResource() ?: Res.drawable.avatar_female_1
+                    ),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(bounded = false),
+                            onClick = component::onAvatarClick
+                        )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = state.player?.name ?: "",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Icon(
+                        imageVector = if (state.player?.sex == Sex.male) Icons.Default.Male else Icons.Default.Female,
+                        contentDescription = null,
+                        tint = if (state.player?.sex == Sex.male) Color.Blue else Color.Magenta,
+                        modifier = Modifier.padding(start = 8.dp).size(24.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = ripple(bounded = true),
+                                onClick = component::onSexChange
+                            )
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_total_power),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = "${state.player?.totalStrength() ?: 0}",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    StatusCard(
+                        title = stringResource(Res.string.level),
+                        value = state.player?.level ?: 0,
+                        onValueChange = component::onLevelChange
+                    )
+                    StatusCard(
+                        title = stringResource(Res.string.power),
+                        value = state.player?.power ?: 0,
+                        onValueChange = component::onPowerChange
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape)
+                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(bounded = false),
+                            onClick = {
+                                component.onBattleClick()
+                            }
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_battle),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    stringResource(Res.string.start_battle),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Spacer(Modifier.height(32.dp))
+            }
             Box(
-                Modifier.fillMaxWidth().statusBarsPadding()
+                Modifier.fillMaxWidth().padding(horizontal = 16.dp).statusBarsPadding().align(Alignment.TopCenter)
             ) {
                 IconButton(
                     onClick = component::onBackClick,
@@ -107,105 +209,6 @@ fun PlayerScreen(
                     )
                 }
             }
-
-            Image(
-                painter = painterResource(
-                    state.player?.avatar?.getDrawableResource() ?: Res.drawable.avatar_female_1
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = ripple(bounded = false),
-                        onClick = component::onAvatarClick
-                    )
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text(
-                    text = state.player?.name ?: "",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector = if (state.player?.sex == Sex.male) Icons.Default.Male else Icons.Default.Female,
-                    contentDescription = null,
-                    tint = if (state.player?.sex == Sex.male) Color.Blue else Color.Magenta,
-                    modifier = Modifier.padding(start = 8.dp).size(24.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = ripple(bounded = true),
-                            onClick = component::onSexChange
-                        )
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_total_power),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(24.dp)
-                )
-                Text(
-                    text = "${state.player?.totalStrength() ?: 0}",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                StatusCard(
-                    title = stringResource(Res.string.level),
-                    value = state.player?.level ?: 0,
-                    onValueChange = component::onLevelChange
-                )
-                StatusCard(
-                    title = stringResource(Res.string.power),
-                    value = state.player?.power ?: 0,
-                    onValueChange = component::onPowerChange
-                )
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer, shape = CircleShape)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = ripple(bounded = false),
-                        onClick = {
-                            component.onBattleClick()
-                        }
-                    )
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_battle),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                stringResource(Res.string.start_battle),
-                style = MaterialTheme.typography.labelLarge
-            )
         }
 
         selectAvatarSlot.child?.let { child ->

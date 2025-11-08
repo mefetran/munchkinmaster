@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
@@ -53,12 +58,14 @@ import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattleMonsterCard
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattlePlayerCard
 
 private const val ArrowRotateDegrees = 180f
+private const val PageSizeFixed = 344
 
 @Composable
 fun BattleScreen(
     component: BattleComponent,
     modifier: Modifier = Modifier,
 ) {
+    val layoutDirection = LocalLayoutDirection.current
     val playersPagerState = rememberPagerState(pageCount = { component.players.size })
     val monstersPagerState = rememberPagerState(pageCount = { component.monsters.size })
     val playersPower by remember {
@@ -94,7 +101,7 @@ fun BattleScreen(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         ) {
             Column(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.padding(vertical = 56.dp).align(Alignment.Center),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -114,6 +121,7 @@ fun BattleScreen(
                                 )
                             }
                         }
+
                         false -> {
                             Icon(
                                 imageVector = Icons.Filled.Lock,
@@ -125,7 +133,16 @@ fun BattleScreen(
                 }
                 HorizontalPager(
                     state = playersPagerState,
-                    contentPadding = PaddingValues(horizontal = 24.dp),
+                    contentPadding = PaddingValues(
+                        start = WindowInsets
+                            .safeDrawing.asPaddingValues()
+                            .calculateStartPadding(layoutDirection) + 24.dp,
+                        end = WindowInsets
+                            .safeDrawing
+                            .asPaddingValues()
+                            .calculateEndPadding(layoutDirection) + 24.dp
+                    ),
+                    pageSize = PageSize.Fixed(PageSizeFixed.dp),
                     pageSpacing = 12.dp,
                 ) { page ->
                     val player = component.players[page]
@@ -172,7 +189,16 @@ fun BattleScreen(
                 }
                 HorizontalPager(
                     state = monstersPagerState,
-                    contentPadding = PaddingValues(horizontal = 24.dp),
+                    pageSize = PageSize.Fixed(PageSizeFixed.dp),
+                    contentPadding = PaddingValues(
+                        start = WindowInsets
+                            .safeDrawing.asPaddingValues()
+                            .calculateStartPadding(layoutDirection) + 24.dp,
+                        end = WindowInsets
+                            .safeDrawing
+                            .asPaddingValues()
+                            .calculateEndPadding(layoutDirection) + 24.dp
+                    ),
                     pageSpacing = 12.dp,
                 ) { page ->
                     val monster = component.monsters[page]
@@ -208,9 +234,7 @@ fun BattleScreen(
             }
             IconButton(
                 onClick = component::onBackClick,
-                modifier = Modifier.padding(
-                    top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
-                )
+                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
