@@ -23,9 +23,12 @@ import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DefaultDiceComponent
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.DefaultSelectPlayerComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.SelectPlayerComponent
 import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
+import org.mefetran.munchkinmaster.presentation.util.DiceConfig
 import org.mefetran.munchkinmaster.presentation.util.SelectPlayerConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 
@@ -36,6 +39,8 @@ interface BattleComponent {
 
     val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>>
     val selectPlayerSlot: Value<ChildSlot<*, SelectPlayerComponent>>
+
+    val diceSlot: Value<ChildSlot<*, DiceComponent>>
 
     fun onBackClick()
     fun onLevelChange(player: Player, newValue: Int)
@@ -50,6 +55,7 @@ interface BattleComponent {
     fun onMonsterLevelChange(monster: Monster, newValue: Int)
     fun onMonsterModificatorChange(monster: Monster, newValue: Int)
     fun onCloneMonster(monster: Monster)
+    fun onDice()
 }
 
 class DefaultBattleComponent(
@@ -64,6 +70,7 @@ class DefaultBattleComponent(
     private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
     private val selectPlayerNavigation = SlotNavigation<SelectPlayerConfig>()
+    private val diceNavigation = SlotNavigation<DiceConfig>()
 
     override val players: SnapshotStateList<Player> = SnapshotStateList()
     override val monsters: SnapshotStateList<Monster> = SnapshotStateList<Monster>().apply {
@@ -109,6 +116,17 @@ class DefaultBattleComponent(
                 }
                 selectPlayerNavigation.dismiss()
             }
+        )
+    }
+    override val diceSlot: Value<ChildSlot<*, DiceComponent>> = childSlot(
+        source = diceNavigation,
+        serializer = DiceConfig.serializer(),
+        key = "DiceSlot",
+        handleBackButton = true,
+    ) { _, componentContext ->
+        DefaultDiceComponent(
+            componentContext = componentContext,
+            onDismiss = diceNavigation::dismiss
         )
     }
 
@@ -256,6 +274,10 @@ class DefaultBattleComponent(
                 }
         }
     }
+
+    override fun onDice() {
+        diceNavigation.activate(DiceConfig)
+    }
 }
 
 class FakeBattleComponent : BattleComponent {
@@ -281,6 +303,11 @@ class FakeBattleComponent : BattleComponent {
             )
         )
     }
+
+    override fun onDice() {
+
+    }
+
     override val monsters: SnapshotStateList<Monster> = SnapshotStateList<Monster>().apply {
         add(
             Monster(
@@ -334,6 +361,8 @@ class FakeBattleComponent : BattleComponent {
     override fun onDeleteMonsterClick(monster: Monster) {
         monsters.remove(monster)
     }
+
+    override val diceSlot: Value<ChildSlot<*, DiceComponent>> = MutableValue(ChildSlot<Any, DiceComponent>())
 
     override fun onAvatarClick(player: Player) {
 
