@@ -134,6 +134,7 @@ fun CreatePlayerScreen(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,
                 ),
+                textStyle = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                 onKeyboardAction = { action ->
                     action()
                     keyboardController?.hide()
