@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -39,9 +40,12 @@ import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.cancel
+import munchkinmaster.composeapp.generated.resources.ic_dice
 import munchkinmaster.composeapp.generated.resources.players_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.PlayerItem
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
 import org.mefetran.munchkinmaster.presentation.ui.uikit.util.conditional
@@ -62,6 +66,7 @@ fun PlayerListScreen(
             derivedStateOf { playerList.maxOfOrNull { player -> player.level } }
         }
     }
+    val diceSlot by component.diceSlot.subscribeAsState()
 
     BackHandler(
         enabled = state is PlayerListState.DeleteMode
@@ -143,6 +148,16 @@ fun PlayerListScreen(
                                     }
                                 }
                                 IconButton(
+                                    onClick = component::onDice,
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.ic_dice),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                                IconButton(
                                     onClick = component::onAddPlayerClick,
                                 ) {
                                     Icon(
@@ -218,6 +233,10 @@ fun PlayerListScreen(
                 onOkClick = component::hideErrorMessage,
                 properties = DialogProperties(dismissOnClickOutside = false)
             )
+        }
+
+        diceSlot.child?.let { child ->
+            DiceScreen(child.instance)
         }
     }
 }

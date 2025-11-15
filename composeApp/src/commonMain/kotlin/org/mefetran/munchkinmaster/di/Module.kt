@@ -8,6 +8,8 @@ import org.mefetran.munchkinmaster.data.repository.player.PlayerRepositoryImpl
 import org.mefetran.munchkinmaster.data.storage.PlayerStorage
 import org.mefetran.munchkinmaster.data.storage.room.RoomPlayerStorage
 import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
+import org.mefetran.munchkinmaster.domain.usecase.dice.GetRandomDiceUseCase
+import org.mefetran.munchkinmaster.domain.usecase.dice.GetRandomDiceUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.CreatePlayerUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.CreatePlayerUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCase
@@ -37,6 +39,7 @@ fun useCaseModule(): Module = module {
     factory<UpdatePlayerUseCase> { UpdatePlayerUseCaseImpl(get()) }
     factory<GetPlayersUseCase> { GetPlayersUseCaseImpl(get()) }
     factory<DeletePlayersByIdsUseCase> { DeletePlayersByIdsUseCaseImpl(get()) }
+    factory<GetRandomDiceUseCase> { GetRandomDiceUseCaseImpl() }
 }
 
 expect fun platformModule(): Module

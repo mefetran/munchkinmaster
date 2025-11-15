@@ -49,10 +49,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
+import munchkinmaster.composeapp.generated.resources.ic_dice
 import munchkinmaster.composeapp.generated.resources.monster
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBottomSheet
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.SelectPlayerModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattleMonsterCard
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattlePlayerCard
@@ -80,6 +83,7 @@ fun BattleScreen(
 
     val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
     val selectPlayerSlot by component.selectPlayerSlot.subscribeAsState()
+    val diceSlot by component.diceSlot.subscribeAsState()
 
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -234,12 +238,23 @@ fun BattleScreen(
             }
             IconButton(
                 onClick = component::onBackClick,
-                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp)
+                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp).align(Alignment.TopStart)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+            IconButton(
+                onClick = component::onDice,
+                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp).align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_dice),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -255,6 +270,10 @@ fun BattleScreen(
             SelectPlayerModalBottomSheet(
                 component = child.instance
             )
+        }
+
+        diceSlot.child?.let { child ->
+            DiceScreen(child.instance)
         }
     }
 }

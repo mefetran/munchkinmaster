@@ -11,3 +11,6 @@ data class AvatarConfig(
 
 @Serializable
 data object SelectPlayerConfig
+
+@Serializable
+data object DiceConfig
