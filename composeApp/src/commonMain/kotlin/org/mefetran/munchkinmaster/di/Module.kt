@@ -1,6 +1,9 @@
 package org.mefetran.munchkinmaster.di
 
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.mefetran.munchkinmaster.data.db.AppDatabase
 import org.mefetran.munchkinmaster.data.db.PlayerDao
@@ -22,24 +25,24 @@ import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCaseImpl
 
 fun commonModule(): Module = module {
-    single<PlayerDao> { get<AppDatabase>().getPlayerDao()}
+    single<PlayerDao> { get<AppDatabase>().getPlayerDao() }
 }
 
 fun repositoryModule(): Module = module {
-    single<PlayerRepository> { PlayerRepositoryImpl(get()) }
+    singleOf(::PlayerRepositoryImpl) { bind<PlayerRepository>() }
 }
 
 fun storageModule(): Module = module {
-    single<PlayerStorage> { RoomPlayerStorage(get()) }
+    singleOf(::RoomPlayerStorage) { bind<PlayerStorage>() }
 }
 
 fun useCaseModule(): Module = module {
-    factory<CreatePlayerUseCase> { CreatePlayerUseCaseImpl(get()) }
-    factory<GetPlayerByIdUseCase> { GetPlayerByIdUseCaseImpl(get()) }
-    factory<UpdatePlayerUseCase> { UpdatePlayerUseCaseImpl(get()) }
-    factory<GetPlayersUseCase> { GetPlayersUseCaseImpl(get()) }
-    factory<DeletePlayersByIdsUseCase> { DeletePlayersByIdsUseCaseImpl(get()) }
-    factory<GetRandomDiceUseCase> { GetRandomDiceUseCaseImpl() }
+    factoryOf(::CreatePlayerUseCaseImpl) { bind<CreatePlayerUseCase>() }
+    factoryOf(::GetPlayerByIdUseCaseImpl) { bind<GetPlayerByIdUseCase>() }
+    factoryOf(::UpdatePlayerUseCaseImpl) { bind<UpdatePlayerUseCase>() }
+    factoryOf(::GetPlayersUseCaseImpl) { bind<GetPlayersUseCase>() }
+    factoryOf(::DeletePlayersByIdsUseCaseImpl) { bind<DeletePlayersByIdsUseCase>() }
+    factoryOf(::GetRandomDiceUseCaseImpl) { bind<GetRandomDiceUseCase>() }
 }
 
 expect fun platformModule(): Module

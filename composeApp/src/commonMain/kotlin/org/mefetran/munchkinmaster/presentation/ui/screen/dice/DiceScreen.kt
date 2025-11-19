@@ -39,13 +39,13 @@ fun DiceScreen(
     ) {
         Box(modifier = modifier) {
             AnimatedContent(
-                targetState = state.value.currentDice,
+                targetState = state.value.rollId to state.value.currentDice,
                 transitionSpec = {
                     fadeIn() + scaleIn() togetherWith fadeOut() + scaleOut()
                 }
-            ) {
+            ) { (_, dice) ->
                 Image(
-                    painter = painterResource(it.getDrawableResource()),
+                    painter = painterResource(dice.getDrawableResource()),
                     contentDescription = null,
                     modifier = Modifier
                         .size(136.dp)

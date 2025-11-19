@@ -31,13 +31,17 @@ class DefaultDiceComponent(
         if (_state.value.isDicing) return
 
         coroutineScope.launch {
-            var dice = getRandomDiceUseCase.execute(Unit)
+            _state.update { it.copy(isDicing = true) }
 
-            while (dice == _state.value.currentDice) {
-                dice = getRandomDiceUseCase.execute(Unit)
+            val dice = getRandomDiceUseCase.execute(Unit)
+
+            _state.update {
+                it.copy(
+                    currentDice = dice,
+                    rollId = it.rollId + 1,
+                    isDicing = false,
+                )
             }
-
-            _state.update { it.copy(currentDice = dice) }
         }
     }
 
