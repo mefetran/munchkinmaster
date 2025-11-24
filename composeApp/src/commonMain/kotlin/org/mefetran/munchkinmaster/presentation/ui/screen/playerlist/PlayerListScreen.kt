@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.cancel
@@ -48,6 +49,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.PlayerItem
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.SettingsManager
 import org.mefetran.munchkinmaster.presentation.ui.uikit.util.conditional
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -58,6 +60,7 @@ fun PlayerListScreen(
 ) {
     val playerList by component.playerListState.subscribeAsState()
     val state by component.state.subscribeAsState()
+    val settingsState by SettingsManager.state.collectAsStateWithLifecycle()
     val maxLevelState = remember(playerList) {
         val playerLevel = playerList.firstOrNull()?.level
         val equalLevels = playerList.all { player -> player.level == playerLevel }
@@ -187,7 +190,7 @@ fun PlayerListScreen(
                 items(playerList) { player ->
                     PlayerItem(
                         player = player,
-                        highlight = player.level == maxLevelState?.value,
+                        highlight = player.level == maxLevelState?.value && settingsState.showLeaders,
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .conditional(

@@ -26,4 +26,8 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="kill">Kill</string>
+    <string name="show_leaders">Show leaders</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="russian">Russian</string>
 </resources>

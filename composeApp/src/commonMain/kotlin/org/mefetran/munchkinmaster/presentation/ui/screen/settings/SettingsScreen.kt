@@ -23,13 +23,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import munchkinmaster.composeapp.generated.resources.Res
+import munchkinmaster.composeapp.generated.resources.english
+import munchkinmaster.composeapp.generated.resources.language
+import munchkinmaster.composeapp.generated.resources.russian
 import munchkinmaster.composeapp.generated.resources.settings_title
+import munchkinmaster.composeapp.generated.resources.show_leaders
 import munchkinmaster.composeapp.generated.resources.theme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.theme.ThemeManager
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dropdown.CustomExposedDropdownMenu
+import org.mefetran.munchkinmaster.presentation.ui.uikit.model.LocaleOption
 import org.mefetran.munchkinmaster.presentation.ui.uikit.model.ThemeOption
+import org.mefetran.munchkinmaster.presentation.ui.uikit.switch.SwitchButton
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.SettingsManager
+import java.util.Locale
 
 @Composable
 fun SettingsScreen(
@@ -37,11 +45,18 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     val themeData by ThemeManager.themeDataState.collectAsStateWithLifecycle()
+    val settingsState by SettingsManager.state.collectAsStateWithLifecycle()
     val themesList = remember {
         listOf(
             ThemeOption.SystemTheme,
             ThemeOption.DarkTheme,
             ThemeOption.LightTheme,
+        )
+    }
+    val localesList = remember {
+        listOf(
+            LocaleOption.EnglishLocale,
+            LocaleOption.RussianLocale,
         )
     }
 
@@ -96,10 +111,45 @@ fun SettingsScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-                onOptionClicked = { themeOption -> 
+                onOptionClicked = { themeOption ->
                     component.onThemeOptionClick(themeOption)
                 },
-                modifier = Modifier.padding(all = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp, bottom = 8.dp)
+            )
+            CustomExposedDropdownMenu(
+                options = localesList,
+                label = stringResource(Res.string.language),
+                initialValue = when (settingsState.locale) {
+                    "en" -> stringResource(Res.string.english)
+                    "ru" -> stringResource(Res.string.russian)
+                    null -> stringResource(
+                        when (Locale.getDefault().toString().substring(0, 2)) {
+                            "en" -> Res.string.english
+                            "ru" -> Res.string.russian
+                            else -> Res.string.english
+                        }
+                    )
+
+                    else -> stringResource(Res.string.english)
+                },
+                dropdownText = { localeOption ->
+                    Text(
+                        text = stringResource(localeOption.localizedName),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                onOptionClicked = { localeOption ->
+                    component.onLocaleOptionClick(localeOption)
+                },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+            SwitchButton(
+                title = stringResource(Res.string.show_leaders),
+                checked = settingsState.showLeaders,
+                onCheckedChange = { newValue ->
+                    component.onShowLeadersClick(newValue)
+                },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
     }

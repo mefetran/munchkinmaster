@@ -26,4 +26,8 @@
     <string name="light">Светлая</string>
     <string name="dark">Тёмная</string>
     <string name="kill">Убить</string>
+    <string name="show_leaders">Показать лидеров</string>
+    <string name="language">Язык</string>
+    <string name="english">Английский</string>
+    <string name="russian">Русский</string>
 </resources>
