@@ -24,10 +24,11 @@ import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
+import org.mefetran.munchkinmaster.presentation.ui.screen.settings.SettingsManager
+import org.mefetran.munchkinmaster.domain.model.MaxLevel
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerLevelUseCase
 import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
-
-private const val DefaultMaxLevel = 10
 
 interface PlayerComponent {
     val state: Value<PlayerState>
@@ -52,6 +53,8 @@ class DefaultPlayerComponent(
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
     private val getPlayerByIdUseCase: GetPlayerByIdUseCase by inject()
     private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
+    private val updatePlayerLevelUseCase: UpdatePlayerLevelUseCase by inject()
+    private val maxLevel: MaxLevel = SettingsManager.state.value.maxLevel
     private val _state = MutableValue(PlayerState())
     override val state: Value<PlayerState> = _state
     override val selectAvatarSlot: Value<ChildSlot<*, AvatarComponent>> = childSlot(
@@ -96,11 +99,14 @@ class DefaultPlayerComponent(
 
     override fun onLevelChange(newValue: Int) {
         scope.launch {
-            _state.value.player
-                ?.copy(level = newValue.coerceIn(1, DefaultMaxLevel))
-                ?.let { updated ->
-                    updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
-                }
+            _state.value.player?.let { player ->
+                val updatePlayerLevelParams = UpdatePlayerLevelUseCase.Params(
+                    player = player,
+                    newLevel = newValue,
+                    maxLevel = maxLevel
+                )
+                updatePlayerLevelUseCase.execute(updatePlayerLevelParams)
+            }
         }
     }
 
@@ -141,7 +147,6 @@ class DefaultPlayerComponent(
                 updatePlayerUseCase.execute(
                     UpdatePlayerUseCase.Params(
                         player.copy(
-                            level = 1,
                             power = 0,
                         )
                     )
@@ -157,6 +162,7 @@ class FakePlayerComponent(
 ) : PlayerComponent {
     private val playerRepository = PlayerRepositoryImpl(InMemoryPlayerStorage())
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private val maxLevel: MaxLevel = SettingsManager.state.value.maxLevel
     private val _state = MutableValue(PlayerState())
     override val state: Value<PlayerState> = _state
 
@@ -173,7 +179,7 @@ class FakePlayerComponent(
     override fun onLevelChange(newValue: Int) {
         scope.launch {
             _state.value.player
-                ?.copy(level = newValue.coerceIn(1, DefaultMaxLevel))
+                ?.copy(level = newValue.coerceIn(1, maxLevel.value))
                 ?.let { updated ->
                     playerRepository.updatePlayer(updated)
                 }

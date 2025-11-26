@@ -49,7 +49,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.PlayerItem
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
-import org.mefetran.munchkinmaster.presentation.ui.uikit.util.SettingsManager
+import org.mefetran.munchkinmaster.presentation.ui.screen.settings.SettingsManager
 import org.mefetran.munchkinmaster.presentation.ui.uikit.util.conditional
 
 @OptIn(ExperimentalComposeUiApi::class)

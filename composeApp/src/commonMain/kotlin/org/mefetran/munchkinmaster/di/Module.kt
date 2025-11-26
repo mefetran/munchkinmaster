@@ -21,6 +21,8 @@ import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCaseImpl
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerLevelUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerLevelUseCaseImpl
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCaseImpl
 
@@ -43,6 +45,7 @@ fun useCaseModule(): Module = module {
     factoryOf(::GetPlayersUseCaseImpl) { bind<GetPlayersUseCase>() }
     factoryOf(::DeletePlayersByIdsUseCaseImpl) { bind<DeletePlayersByIdsUseCase>() }
     factoryOf(::GetRandomDiceUseCaseImpl) { bind<GetRandomDiceUseCase>() }
+    factoryOf(::UpdatePlayerLevelUseCaseImpl) { bind<UpdatePlayerLevelUseCase>()}
 }
 
 expect fun platformModule(): Module

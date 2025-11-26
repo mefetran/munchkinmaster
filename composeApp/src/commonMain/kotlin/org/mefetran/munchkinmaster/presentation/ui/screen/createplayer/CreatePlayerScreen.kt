@@ -84,6 +84,7 @@ fun CreatePlayerScreen(
     ) {
         Column(
             modifier = Modifier
+                .padding(WindowInsets.safeDrawing.asPaddingValues())
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {

@@ -16,10 +16,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mefetran.munchkinmaster.domain.model.Avatar
+import org.mefetran.munchkinmaster.domain.model.MaxLevel
 import org.mefetran.munchkinmaster.domain.model.Monster
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayerByIdUseCase
+import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerLevelUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.DefaultAvatarComponent
@@ -27,6 +29,7 @@ import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DefaultDiceCompon
 import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.DefaultSelectPlayerComponent
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.SelectPlayerComponent
+import org.mefetran.munchkinmaster.presentation.ui.screen.settings.SettingsManager
 import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
 import org.mefetran.munchkinmaster.presentation.util.DiceConfig
 import org.mefetran.munchkinmaster.presentation.util.SelectPlayerConfig
@@ -71,6 +74,8 @@ class DefaultBattleComponent(
     private val avatarNavigation = SlotNavigation<AvatarConfig>()
     private val selectPlayerNavigation = SlotNavigation<SelectPlayerConfig>()
     private val diceNavigation = SlotNavigation<DiceConfig>()
+    private val updatePlayerLevelUseCase: UpdatePlayerLevelUseCase by inject()
+    private val maxLevel: MaxLevel = SettingsManager.state.value.maxLevel
 
     override val players: SnapshotStateList<Player> = SnapshotStateList()
     override val monsters: SnapshotStateList<Monster> = SnapshotStateList<Monster>().apply {
@@ -174,11 +179,12 @@ class DefaultBattleComponent(
 
     override fun onLevelChange(player: Player, newValue: Int) {
         scope.launch {
-            player
-                .copy(level = newValue)
-                .let { updated ->
-                    updatePlayerUseCase.execute(UpdatePlayerUseCase.Params(updated))
-                }
+            val updatePlayerLevelParams = UpdatePlayerLevelUseCase.Params(
+                player = player,
+                newLevel = newValue,
+                maxLevel = maxLevel
+            )
+            updatePlayerLevelUseCase.execute(updatePlayerLevelParams)
         }
     }
 

@@ -4,14 +4,16 @@ import com.arkivanov.decompose.ComponentContext
 import org.mefetran.munchkinmaster.presentation.ui.theme.ThemeData
 import org.mefetran.munchkinmaster.presentation.ui.theme.ThemeManager
 import org.mefetran.munchkinmaster.presentation.ui.uikit.model.LocaleOption
+import org.mefetran.munchkinmaster.presentation.ui.uikit.model.MaxLevelOption
 import org.mefetran.munchkinmaster.presentation.ui.uikit.model.ThemeOption
-import org.mefetran.munchkinmaster.presentation.ui.uikit.util.SettingsManager
 
 interface SettingsComponent {
     fun onBackClick()
     fun onThemeOptionClick(themeOption: ThemeOption)
     fun onShowLeadersClick(newValue: Boolean)
     fun onLocaleOptionClick(localeOption: LocaleOption)
+    fun onMaxLevelOptionClick(maxLevelOption: MaxLevelOption)
+    fun onKeepScreenOnClick(newValue: Boolean)
 }
 
 class DefaultSettingsComponent(
@@ -41,6 +43,14 @@ class DefaultSettingsComponent(
             newValue = localeOption.code
         )
     }
+
+    override fun onMaxLevelOptionClick(maxLevelOption: MaxLevelOption) {
+        SettingsManager.updateMaxLevel(maxLevelOption.value)
+    }
+
+    override fun onKeepScreenOnClick(newValue: Boolean) {
+        SettingsManager.keepScreenOn(newValue)
+    }
 }
 
 class FakeSettingsComponent : SettingsComponent {
@@ -57,6 +67,14 @@ class FakeSettingsComponent : SettingsComponent {
     }
 
     override fun onLocaleOptionClick(localeOption: LocaleOption) {
+
+    }
+
+    override fun onMaxLevelOptionClick(maxLevelOption: MaxLevelOption) {
+
+    }
+
+    override fun onKeepScreenOnClick(newValue: Boolean) {
 
     }
 }
