@@ -26,4 +26,13 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="kill">Kill</string>
+    <string name="show_leaders">Show leaders</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="russian">Russian</string>
+    <string name="level_limit">Level limit</string>
+    <string name="standard">Standard</string>
+    <string name="epic_munchkin">Epic Munchkin</string>
+    <string name="unlimited">Unlimited</string>
+    <string name="keep_screen_on">Keep screen on</string>
 </resources>

@@ -84,6 +84,7 @@ fun CreatePlayerScreen(
     ) {
         Column(
             modifier = Modifier
+                .padding(WindowInsets.safeDrawing.asPaddingValues())
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
@@ -134,6 +135,7 @@ fun CreatePlayerScreen(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,
                 ),
+                textStyle = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                 onKeyboardAction = { action ->
                     action()
                     keyboardController?.hide()

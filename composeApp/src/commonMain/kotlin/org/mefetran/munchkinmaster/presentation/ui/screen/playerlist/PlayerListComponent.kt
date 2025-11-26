@@ -1,6 +1,11 @@
 package org.mefetran.munchkinmaster.presentation.ui.screen.playerlist
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -20,12 +25,17 @@ import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.usecase.player.DeletePlayersByIdsUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.GetPlayersUseCase
 import org.mefetran.munchkinmaster.domain.usecase.player.UpdatePlayerUseCase
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DefaultDiceComponent
+import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceComponent
+import org.mefetran.munchkinmaster.presentation.util.DiceConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
 import kotlin.getValue
 
 interface PlayerListComponent {
     val playerListState: Value<List<Player>>
     val state: Value<PlayerListState>
+
+    val diceSlot: Value<ChildSlot<*, DiceComponent>>
 
     fun onPlayerClick(playerId: Long)
     fun onAddPlayerClick()
@@ -36,6 +46,7 @@ interface PlayerListComponent {
     fun onDeleteModeOff()
     fun onSettingsClick()
     fun onResetPlayers()
+    fun onDice()
 }
 
 class DefaultPlayerListComponent(
@@ -48,11 +59,24 @@ class DefaultPlayerListComponent(
     private val getPlayersUseCase: GetPlayersUseCase by inject()
     private val deletePlayersByIdsUseCase: DeletePlayersByIdsUseCase by inject()
     private val updatePlayerUseCase: UpdatePlayerUseCase by inject()
+    private val diceNavigation = SlotNavigation<DiceConfig>()
     private val _playerListState = MutableValue(emptyList<Player>())
     override val playerListState: Value<List<Player>> = _playerListState
 
     private val _state = MutableValue<PlayerListState>(PlayerListState.MainState())
     override val state: Value<PlayerListState> = _state
+
+    override val diceSlot: Value<ChildSlot<*, DiceComponent>> = childSlot(
+        source = diceNavigation,
+        serializer = DiceConfig.serializer(),
+        key = "DiceSlot",
+        handleBackButton = true,
+    ) { _, componentContext ->
+        DefaultDiceComponent(
+            componentContext = componentContext,
+            onDismiss = diceNavigation::dismiss
+        )
+    }
 
     init {
         scope.launch {
@@ -154,6 +178,10 @@ class DefaultPlayerListComponent(
             }
         }
     }
+
+    override fun onDice() {
+        diceNavigation.activate(DiceConfig)
+    }
 }
 
 class FakePlayerListComponent : PlayerListComponent {
@@ -164,6 +192,10 @@ class FakePlayerListComponent : PlayerListComponent {
 
     private val _state = MutableValue<PlayerListState>(PlayerListState.MainState())
     override val state: Value<PlayerListState> = _state
+    override val diceSlot: Value<ChildSlot<*, DiceComponent>> = MutableValue(ChildSlot<Any, DiceComponent>())
+
+    override fun onDice() {
+    }
 
     private fun reduce(transform: (PlayerListState) -> PlayerListState) {
         _state.update(transform)
