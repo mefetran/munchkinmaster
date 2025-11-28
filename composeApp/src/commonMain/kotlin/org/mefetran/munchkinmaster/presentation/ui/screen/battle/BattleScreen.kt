@@ -215,7 +215,7 @@ fun BattleScreen(
                         onModificatorChange = {
                             component.onMonsterModificatorChange(monster, it)
                         },
-                        onDeleteClick = if (page > 0) {
+                        onDeleteClick = if (component.monsters.size > 1) {
                             {
                                 component.onDeleteMonsterClick(monster)
                             }
