@@ -101,7 +101,7 @@ fun BattleMonsterCard(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "en")
 @Composable
 fun BattleMonsterCardPreview() {
-    val monsterState = remember { mutableStateOf(Monster(id = 0, level = 4, modificator = -2)) }
+    val monsterState = remember { mutableStateOf(Monster(id = "some_id", level = 4, modificator = -2)) }
 
     BattleMonsterCard(
         name = stringResource(Res.string.monster) + " 1",

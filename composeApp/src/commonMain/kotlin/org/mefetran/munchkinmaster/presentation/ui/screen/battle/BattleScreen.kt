@@ -153,19 +153,19 @@ fun BattleScreen(
                     BattlePlayerCard(
                         player = player,
                         onAvatarClick = {
-                            component.onAvatarClick(player)
+                            component.onPlayerAvatarClick(player)
                         },
                         onSexChange = {
-                            component.onSexChange(player)
+                            component.onPlayerSexChange(player)
                         },
                         onLevelChange = {
-                            component.onLevelChange(player, it)
+                            component.onPlayerLevelChange(player, it)
                         },
                         onPowerChange = {
-                            component.onPowerChange(player, it)
+                            component.onPlayerPowerChange(player, it)
                         },
                         onModificatorChange = {
-                            component.onModificatorChange(player, it)
+                            component.onPlayerModificatorChange(player, it)
                         },
                         onDeleteClick = if (page > 0) {
                             { component.onDeletePlayerClick(player) }

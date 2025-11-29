@@ -34,6 +34,7 @@ import org.mefetran.munchkinmaster.presentation.util.AvatarConfig
 import org.mefetran.munchkinmaster.presentation.util.DiceConfig
 import org.mefetran.munchkinmaster.presentation.util.SelectPlayerConfig
 import org.mefetran.munchkinmaster.presentation.util.coroutineScope
+import java.util.UUID
 
 interface BattleComponent {
     val players: SnapshotStateList<Player>
@@ -46,13 +47,13 @@ interface BattleComponent {
     val diceSlot: Value<ChildSlot<*, DiceComponent>>
 
     fun onBackClick()
-    fun onLevelChange(player: Player, newValue: Int)
-    fun onPowerChange(player: Player, newValue: Int)
-    fun onModificatorChange(player: Player, newValue: Int)
-    fun onSexChange(player: Player)
+    fun onPlayerLevelChange(player: Player, newValue: Int)
+    fun onPlayerPowerChange(player: Player, newValue: Int)
+    fun onPlayerModificatorChange(player: Player, newValue: Int)
+    fun onPlayerSexChange(player: Player)
     fun onDeletePlayerClick(player: Player)
     fun onDeleteMonsterClick(monster: Monster)
-    fun onAvatarClick(player: Player)
+    fun onPlayerAvatarClick(player: Player)
     fun onAddPlayerClick()
     fun onAddMonsterClick()
     fun onMonsterLevelChange(monster: Monster, newValue: Int)
@@ -81,7 +82,7 @@ class DefaultBattleComponent(
     override val monsters: SnapshotStateList<Monster> = SnapshotStateList<Monster>().apply {
         add(
             Monster(
-                id = 1,
+                id = UUID.randomUUID().toString(),
                 level = 1,
                 modificator = 0
             )
@@ -159,7 +160,7 @@ class DefaultBattleComponent(
         monsters.remove(monster)
     }
 
-    override fun onAvatarClick(player: Player) {
+    override fun onPlayerAvatarClick(player: Player) {
         avatarNavigation.activate(AvatarConfig(player.avatar, player.id))
     }
 
@@ -170,14 +171,14 @@ class DefaultBattleComponent(
     override fun onAddMonsterClick() {
         monsters.add(
             Monster(
-                id = monsters.lastIndex + 2,
+                id = UUID.randomUUID().toString(),
                 level = 1,
                 modificator = 0,
             )
         )
     }
 
-    override fun onLevelChange(player: Player, newValue: Int) {
+    override fun onPlayerLevelChange(player: Player, newValue: Int) {
         scope.launch {
             val updatePlayerLevelParams = UpdatePlayerLevelUseCase.Params(
                 player = player,
@@ -188,7 +189,7 @@ class DefaultBattleComponent(
         }
     }
 
-    override fun onPowerChange(player: Player, newValue: Int) {
+    override fun onPlayerPowerChange(player: Player, newValue: Int) {
         scope.launch {
             player
                 .copy(power = newValue)
@@ -198,7 +199,7 @@ class DefaultBattleComponent(
         }
     }
 
-    override fun onModificatorChange(player: Player, newValue: Int) {
+    override fun onPlayerModificatorChange(player: Player, newValue: Int) {
         scope.launch {
             val index = players.indexOfFirst { it.id == player.id }
             if (index == -1) return@launch
@@ -208,7 +209,7 @@ class DefaultBattleComponent(
         }
     }
 
-    override fun onSexChange(player: Player) {
+    override fun onPlayerSexChange(player: Player) {
         scope.launch {
             player
                 .let { _ ->
@@ -234,7 +235,7 @@ class DefaultBattleComponent(
     ) {
         val index = monsters.indexOfFirst { it.id == monster.id }
         if (index != -1) {
-            monsters[index] = monster.copy(level = newValue)
+            monsters[index] = monster.copy(level = newValue.coerceAtLeast(1))
         }
     }
 
@@ -249,7 +250,7 @@ class DefaultBattleComponent(
     }
 
     override fun onCloneMonster(monster: Monster) {
-        monsters.add(monster.copy(id = monsters.lastIndex + 2))
+        monsters.add(monster.copy(id = UUID.randomUUID().toString()))
     }
 
     private fun onAvatarChange(newAvatar: Avatar, playerId: Long) {
@@ -317,7 +318,7 @@ class FakeBattleComponent : BattleComponent {
     override val monsters: SnapshotStateList<Monster> = SnapshotStateList<Monster>().apply {
         add(
             Monster(
-                id = 1,
+                id = UUID.randomUUID().toString(),
                 level = 1,
                 modificator = 0
             )
@@ -335,28 +336,28 @@ class FakeBattleComponent : BattleComponent {
 
     }
 
-    override fun onLevelChange(
+    override fun onPlayerLevelChange(
         player: Player,
         newValue: Int
     ) {
 
     }
 
-    override fun onPowerChange(
+    override fun onPlayerPowerChange(
         player: Player,
         newValue: Int
     ) {
 
     }
 
-    override fun onModificatorChange(
+    override fun onPlayerModificatorChange(
         player: Player,
         newValue: Int
     ) {
 
     }
 
-    override fun onSexChange(player: Player) {
+    override fun onPlayerSexChange(player: Player) {
 
     }
 
@@ -370,7 +371,7 @@ class FakeBattleComponent : BattleComponent {
 
     override val diceSlot: Value<ChildSlot<*, DiceComponent>> = MutableValue(ChildSlot<Any, DiceComponent>())
 
-    override fun onAvatarClick(player: Player) {
+    override fun onPlayerAvatarClick(player: Player) {
 
     }
 
@@ -381,7 +382,7 @@ class FakeBattleComponent : BattleComponent {
     override fun onAddMonsterClick() {
         monsters.add(
             Monster(
-                id = monsters.lastIndex + 2,
+                id = UUID.randomUUID().toString(),
                 level = 1,
                 modificator = 0,
             )
@@ -403,6 +404,6 @@ class FakeBattleComponent : BattleComponent {
     }
 
     override fun onCloneMonster(monster: Monster) {
-        monsters.add(monster.copy(id = monsters.lastIndex + 2))
+        monsters.add(monster.copy(id = UUID.randomUUID().toString()))
     }
 }
