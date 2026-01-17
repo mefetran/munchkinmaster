@@ -43,6 +43,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.WindowSizeClass
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.currentWindowSizeClass
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 import org.mefetran.munchkinmaster.presentation.util.totalStrength
 
@@ -57,6 +59,8 @@ fun BattlePlayerCard(
     onModificatorChange: (Int) -> Unit,
     onDeleteClick: (() -> Unit)? = null,
 ) {
+    val windowSizeClass = currentWindowSizeClass()
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -138,25 +142,55 @@ fun BattlePlayerCard(
                 }
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(12.dp).fillMaxWidth()
-        ) {
-            StatusCard(
-                title = stringResource(Res.string.level),
-                value = player.level,
-                onValueChange = onLevelChange
-            )
-            StatusCard(
-                title = stringResource(Res.string.power),
-                value = player.power,
-                onValueChange = onPowerChange
-            )
-            StatusCard(
-                title = stringResource(Res.string.modificator),
-                value = player.modificator,
-                onValueChange = onModificatorChange
-            )
+        when {
+            windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    modifier = Modifier.padding(12.dp).fillMaxWidth()
+                ) {
+                    StatusCard(
+                        title = stringResource(Res.string.level),
+                        value = player.level,
+                        onValueChange = onLevelChange,
+                    )
+                    StatusCard(
+                        title = stringResource(Res.string.power),
+                        value = player.power,
+                        onValueChange = onPowerChange,
+                    )
+                    StatusCard(
+                        title = stringResource(Res.string.modificator),
+                        value = player.modificator,
+                        onValueChange = onModificatorChange,
+                    )
+                }
+            }
+
+            else -> {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    modifier = Modifier.padding(12.dp).fillMaxWidth()
+                ) {
+                    StatusCard(
+                        title = stringResource(Res.string.level),
+                        value = player.level,
+                        onValueChange = onLevelChange,
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatusCard(
+                        title = stringResource(Res.string.power),
+                        value = player.power,
+                        onValueChange = onPowerChange,
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatusCard(
+                        title = stringResource(Res.string.modificator),
+                        value = player.modificator,
+                        onValueChange = onModificatorChange,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
         }
     }
 }

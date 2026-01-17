@@ -81,7 +81,7 @@ fun BattleMonsterCard(
         }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             modifier = Modifier.padding(12.dp).fillMaxWidth()
         ) {
             StatusCard(

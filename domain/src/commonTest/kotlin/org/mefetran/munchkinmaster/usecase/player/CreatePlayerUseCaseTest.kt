@@ -14,7 +14,6 @@ class CreatePlayerUseCaseTest {
     private lateinit var repository: FakePlayerRepository
     private lateinit var useCase: CreatePlayerUseCase
 
-
     @BeforeTest
     fun before() {
         repository = FakePlayerRepository()
@@ -25,7 +24,7 @@ class CreatePlayerUseCaseTest {
     fun `Should success create player`() = runTest {
         // arrange
         val player = Player(
-            id = 42,
+            id = 42L,
             name = "Artem",
             sex = Sex.male,
             level = 4,
@@ -38,5 +37,24 @@ class CreatePlayerUseCaseTest {
 
         // assert
         assertEquals(true, result)
+    }
+
+    @Test
+    fun `Should failure create player`() = runTest {
+        // arrange
+        val player = Player(
+            id = 31L,
+            name = "Artem",
+            sex = Sex.male,
+            level = 4,
+            power = 4,
+            avatar = Avatar.male2,
+        )
+
+        // act
+        val result = useCase.execute(CreatePlayerUseCase.Params(player))
+
+        // assert
+        assertEquals(false, result)
     }
 }

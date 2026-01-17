@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -59,15 +62,46 @@ import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.screen.selectplayer.SelectPlayerModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattleMonsterCard
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.BattlePlayerCard
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.WindowSizeClass
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.conditional
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.currentWindowSizeClass
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.rememberScreenHeight
+import org.mefetran.munchkinmaster.presentation.ui.uikit.util.rememberScreenWidth
 
 private const val ArrowRotateDegrees = 180f
-private const val PageSizeFixed = 344
+private const val HorizontalPageSizeFixedMediumScreen = 440
+private const val HorizontalPageSizeFixedExpandedScreen = 440
+private const val VerticalPlayerPageSizeFixedExpandedScreen = 208
+private const val VerticalMonsterPageSizeFixedExpandedScreen = 192
+private const val HorizontalPadding = 24
+private const val PageSpacingPadding = 12
+private const val ScoreVerticalPadding = 16
+private const val ScoreHorizontalPadding = 4
+private const val IconHorizontalPadding = 16
 
 @Composable
 fun BattleScreen(
     component: BattleComponent,
     modifier: Modifier = Modifier,
 ) {
+    val windowSizeClass = currentWindowSizeClass()
+    val screenWidth = rememberScreenWidth()
+    val screenHeight = rememberScreenHeight()
+    val horizontalPageSizeFixed = when {
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> HorizontalPageSizeFixedExpandedScreen.dp
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> HorizontalPageSizeFixedMediumScreen.dp
+        else -> screenWidth - HorizontalPadding.dp * 2
+    }
+    val verticalPlayerPageSizeFixed = when {
+        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> VerticalPlayerPageSizeFixedExpandedScreen.dp
+
+        else -> screenHeight / 4
+    }
+    val verticalMonsterPageSizeFixed = when {
+        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> VerticalMonsterPageSizeFixedExpandedScreen.dp
+
+        else -> screenHeight / 4
+    }
     val layoutDirection = LocalLayoutDirection.current
     val playersPagerState = rememberPagerState(pageCount = { component.players.size })
     val monstersPagerState = rememberPagerState(pageCount = { component.monsters.size })
@@ -80,6 +114,12 @@ fun BattleScreen(
     val showAddPlayerIcon by remember {
         derivedStateOf { component.players.size < 2 }
     }
+    val isVerticalPager by remember {
+        derivedStateOf {
+            windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND)
+        }
+    }
+    val windowInsetsPaddings = WindowInsets.safeDrawing.asPaddingValues()
 
     val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
     val selectPlayerSlot by component.selectPlayerSlot.subscribeAsState()
@@ -102,10 +142,19 @@ fun BattleScreen(
         }
 
         Box(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .fillMaxSize()
+                .conditional(
+                    condition = !isVerticalPager,
+                    ifTrue = {
+                        verticalScroll(rememberScrollState())
+                    }
+                ),
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 56.dp).align(Alignment.Center),
+                modifier = Modifier
+                    .padding(vertical = 56.dp)
+                    .align(Alignment.Center),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -135,42 +184,71 @@ fun BattleScreen(
                         }
                     }
                 }
-                HorizontalPager(
-                    state = playersPagerState,
-                    contentPadding = PaddingValues(
-                        start = WindowInsets
-                            .safeDrawing.asPaddingValues()
-                            .calculateStartPadding(layoutDirection) + 24.dp,
-                        end = WindowInsets
-                            .safeDrawing
-                            .asPaddingValues()
-                            .calculateEndPadding(layoutDirection) + 24.dp
-                    ),
-                    pageSize = PageSize.Fixed(PageSizeFixed.dp),
-                    pageSpacing = 12.dp,
-                ) { page ->
-                    val player = component.players[page]
-                    BattlePlayerCard(
-                        player = player,
-                        onAvatarClick = {
-                            component.onPlayerAvatarClick(player)
-                        },
-                        onSexChange = {
-                            component.onPlayerSexChange(player)
-                        },
-                        onLevelChange = {
-                            component.onPlayerLevelChange(player, it)
-                        },
-                        onPowerChange = {
-                            component.onPlayerPowerChange(player, it)
-                        },
-                        onModificatorChange = {
-                            component.onPlayerModificatorChange(player, it)
-                        },
-                        onDeleteClick = if (page > 0) {
-                            { component.onDeletePlayerClick(player) }
-                        } else null
-                    )
+                if (isVerticalPager) {
+                    VerticalPager(
+                        state = playersPagerState,
+                        pageSize = PageSize.Fixed(verticalPlayerPageSizeFixed),
+                        pageSpacing = PageSpacingPadding.dp,
+                    ) { page ->
+                        val player = component.players[page]
+                        BattlePlayerCard(
+                            player = player,
+                            modifier = Modifier.width(horizontalPageSizeFixed),
+                            onAvatarClick = {
+                                component.onPlayerAvatarClick(player)
+                            },
+                            onSexChange = {
+                                component.onPlayerSexChange(player)
+                            },
+                            onLevelChange = {
+                                component.onPlayerLevelChange(player, it)
+                            },
+                            onPowerChange = {
+                                component.onPlayerPowerChange(player, it)
+                            },
+                            onModificatorChange = {
+                                component.onPlayerModificatorChange(player, it)
+                            },
+                            onDeleteClick = if (page > 0) {
+                                { component.onDeletePlayerClick(player) }
+                            } else null
+                        )
+                    }
+                } else {
+                    HorizontalPager(
+                        state = playersPagerState,
+                        contentPadding = PaddingValues(
+                            start = windowInsetsPaddings
+                                .calculateStartPadding(layoutDirection) + HorizontalPadding.dp,
+                            end = windowInsetsPaddings
+                                .calculateEndPadding(layoutDirection) + HorizontalPadding.dp,
+                        ),
+                        pageSize = PageSize.Fixed(horizontalPageSizeFixed),
+                        pageSpacing = PageSpacingPadding.dp,
+                    ) { page ->
+                        val player = component.players[page]
+                        BattlePlayerCard(
+                            player = player,
+                            onAvatarClick = {
+                                component.onPlayerAvatarClick(player)
+                            },
+                            onSexChange = {
+                                component.onPlayerSexChange(player)
+                            },
+                            onLevelChange = {
+                                component.onPlayerLevelChange(player, it)
+                            },
+                            onPowerChange = {
+                                component.onPlayerPowerChange(player, it)
+                            },
+                            onModificatorChange = {
+                                component.onPlayerModificatorChange(player, it)
+                            },
+                            onDeleteClick = if (page > 0) {
+                                { component.onDeletePlayerClick(player) }
+                            } else null
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -178,7 +256,9 @@ fun BattleScreen(
                     Text(
                         text = playersPower.toString(),
                         style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.padding(bottom = 16.dp).padding(horizontal = 4.dp)
+                        modifier = Modifier
+                            .padding(bottom = ScoreVerticalPadding.dp)
+                            .padding(horizontal = ScoreHorizontalPadding.dp)
                     )
                     BattleArrowIndicator(
                         playersPower = playersPower,
@@ -188,42 +268,71 @@ fun BattleScreen(
                     Text(
                         text = monstersPower.toString(),
                         style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.padding(top = 16.dp).padding(horizontal = 4.dp)
+                        modifier = Modifier
+                            .padding(top = ScoreVerticalPadding.dp)
+                            .padding(horizontal = ScoreHorizontalPadding.dp)
                     )
                 }
-                HorizontalPager(
-                    state = monstersPagerState,
-                    pageSize = PageSize.Fixed(PageSizeFixed.dp),
-                    contentPadding = PaddingValues(
-                        start = WindowInsets
-                            .safeDrawing.asPaddingValues()
-                            .calculateStartPadding(layoutDirection) + 24.dp,
-                        end = WindowInsets
-                            .safeDrawing
-                            .asPaddingValues()
-                            .calculateEndPadding(layoutDirection) + 24.dp
-                    ),
-                    pageSpacing = 12.dp,
-                ) { page ->
-                    val monster = component.monsters[page]
-                    BattleMonsterCard(
-                        name = stringResource(Res.string.monster) + " ${page + 1}",
-                        monster = monster,
-                        onLevelChange = {
-                            component.onMonsterLevelChange(monster, it)
-                        },
-                        onModificatorChange = {
-                            component.onMonsterModificatorChange(monster, it)
-                        },
-                        onDeleteClick = if (component.monsters.size > 1) {
-                            {
-                                component.onDeleteMonsterClick(monster)
+                if (isVerticalPager) {
+                    VerticalPager(
+                        state = monstersPagerState,
+                        pageSize = PageSize.Fixed(verticalMonsterPageSizeFixed),
+                        pageSpacing = PageSpacingPadding.dp,
+                        modifier = Modifier.height(if (component.monsters.size > 1) verticalPlayerPageSizeFixed * 2 + 48.dp else verticalPlayerPageSizeFixed)
+                    ) { page ->
+                        val monster = component.monsters[page]
+                        BattleMonsterCard(
+                            name = stringResource(Res.string.monster) + " ${page + 1}",
+                            monster = monster,
+                            modifier = Modifier.width(horizontalPageSizeFixed),
+                            onLevelChange = {
+                                component.onMonsterLevelChange(monster, it)
+                            },
+                            onModificatorChange = {
+                                component.onMonsterModificatorChange(monster, it)
+                            },
+                            onDeleteClick = if (component.monsters.size > 1) {
+                                {
+                                    component.onDeleteMonsterClick(monster)
+                                }
+                            } else null,
+                            onCloneMonsterClick = {
+                                component.onCloneMonster(monster)
                             }
-                        } else null,
-                        onCloneMonsterClick = {
-                            component.onCloneMonster(monster)
-                        }
-                    )
+                        )
+                    }
+                } else {
+                    HorizontalPager(
+                        state = monstersPagerState,
+                        pageSize = PageSize.Fixed(horizontalPageSizeFixed),
+                        contentPadding = PaddingValues(
+                            start = windowInsetsPaddings
+                                .calculateStartPadding(layoutDirection) + HorizontalPadding.dp,
+                            end = windowInsetsPaddings
+                                .calculateEndPadding(layoutDirection) + HorizontalPadding.dp
+                        ),
+                        pageSpacing = PageSpacingPadding.dp,
+                    ) { page ->
+                        val monster = component.monsters[page]
+                        BattleMonsterCard(
+                            name = stringResource(Res.string.monster) + " ${page + 1}",
+                            monster = monster,
+                            onLevelChange = {
+                                component.onMonsterLevelChange(monster, it)
+                            },
+                            onModificatorChange = {
+                                component.onMonsterModificatorChange(monster, it)
+                            },
+                            onDeleteClick = if (component.monsters.size > 1) {
+                                {
+                                    component.onDeleteMonsterClick(monster)
+                                }
+                            } else null,
+                            onCloneMonsterClick = {
+                                component.onCloneMonster(monster)
+                            }
+                        )
+                    }
                 }
                 IconButton(
                     onClick = {
@@ -238,7 +347,10 @@ fun BattleScreen(
             }
             IconButton(
                 onClick = component::onBackClick,
-                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp).align(Alignment.TopStart)
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = IconHorizontalPadding.dp)
+                    .align(Alignment.TopStart)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -248,7 +360,10 @@ fun BattleScreen(
             }
             IconButton(
                 onClick = component::onDice,
-                modifier = Modifier.statusBarsPadding().padding(horizontal = 16.dp).align(Alignment.TopEnd)
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = IconHorizontalPadding.dp)
+                    .align(Alignment.TopEnd)
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_dice),
@@ -258,7 +373,6 @@ fun BattleScreen(
                 )
             }
         }
-
 
         selectAvatarSlot.child?.let { child ->
             AvatarModalBottomSheet(
@@ -284,18 +398,16 @@ fun BattleArrowIndicator(
     monstersPower: Int,
     modifier: Modifier = Modifier,
 ) {
-    val isPlayersWinning = playersPower > monstersPower
+    val isPlayersWinning by remember(playersPower, monstersPower) {
+        derivedStateOf {
+            playersPower > monstersPower
+        }
+    }
 
     var rotationOffset by remember { mutableFloatStateOf(0f) }
-    var initialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(isPlayersWinning) {
-        if (initialized) {
-            rotationOffset += ArrowRotateDegrees
-        } else {
-            initialized = true
-            rotationOffset = if (isPlayersWinning) 0f else ArrowRotateDegrees
-        }
+        rotationOffset = if (isPlayersWinning) 0f else ArrowRotateDegrees
     }
 
     val rotation by animateFloatAsState(
