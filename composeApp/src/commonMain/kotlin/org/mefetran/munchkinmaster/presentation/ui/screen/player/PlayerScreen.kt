@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import munchkinmaster.composeapp.generated.resources.Res
@@ -54,7 +55,6 @@ import munchkinmaster.composeapp.generated.resources.power
 import munchkinmaster.composeapp.generated.resources.start_battle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Sex
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.StatusCard

@@ -36,7 +36,7 @@ import munchkinmaster.composeapp.generated.resources.ic_level
 import munchkinmaster.composeapp.generated.resources.ic_power
 import munchkinmaster.composeapp.generated.resources.ic_total_power
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.model.Sex

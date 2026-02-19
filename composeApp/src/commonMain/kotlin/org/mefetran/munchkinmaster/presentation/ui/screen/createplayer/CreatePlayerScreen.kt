@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -54,7 +55,6 @@ import munchkinmaster.composeapp.generated.resources.name
 import munchkinmaster.composeapp.generated.resources.sex
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Sex
 import org.mefetran.munchkinmaster.presentation.ui.screen.avatar.AvatarModalBottomSheet
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog

@@ -20,13 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.modificator
 import munchkinmaster.composeapp.generated.resources.monster
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Monster
 
 @Composable

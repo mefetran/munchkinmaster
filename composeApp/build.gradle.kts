@@ -52,12 +52,13 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
-            implementation(compose.preview)
+            implementation(libs.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
+            implementation(libs.ui.tooling.preview)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

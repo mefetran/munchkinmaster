@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.show_leaders
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SwitchButton(

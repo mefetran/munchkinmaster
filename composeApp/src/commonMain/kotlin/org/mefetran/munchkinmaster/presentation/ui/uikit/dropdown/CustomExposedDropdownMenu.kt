@@ -27,7 +27,7 @@ import munchkinmaster.composeapp.generated.resources.light
 import munchkinmaster.composeapp.generated.resources.system_theme
 import munchkinmaster.composeapp.generated.resources.theme
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

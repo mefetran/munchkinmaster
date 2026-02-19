@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,7 +46,6 @@ import munchkinmaster.composeapp.generated.resources.ic_dice
 import munchkinmaster.composeapp.generated.resources.players_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.screen.dice.DiceScreen
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.PlayerItem
 import org.mefetran.munchkinmaster.presentation.ui.uikit.dialog.ErrorDialog
