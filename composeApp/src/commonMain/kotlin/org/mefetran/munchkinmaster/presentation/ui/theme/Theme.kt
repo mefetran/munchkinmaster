@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import org.mefetran.munchkinmaster.presentation.util.PlatformScrollbarStyleProvider
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -91,10 +92,13 @@ fun MunchkinMasterTheme(
         darkTheme -> darkScheme
         else -> lightScheme
     }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,
-        content = content
-    )
+    PlatformScrollbarStyleProvider(
+        colorScheme = colorScheme
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = AppTypography,
+            content = content
+        )
+    }
 }

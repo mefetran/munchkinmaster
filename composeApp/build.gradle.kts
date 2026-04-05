@@ -62,7 +62,7 @@ kotlin {
             implementation(libs.foundation)
             implementation(libs.material3)
             implementation(libs.ui)
-            implementation(libs.compose.ui.backhandler)
+            implementation(libs.compose.navigationevent)
             implementation(libs.material.icons.extended)
             implementation(libs.components.resources)
             implementation(libs.ui.tooling.preview)

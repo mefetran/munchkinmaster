@@ -1,6 +1,5 @@
 package org.mefetran.munchkinmaster.presentation.ui.uikit.util
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.ui.platform.LocalConfiguration
@@ -16,8 +15,6 @@ actual object LocalAppLocale {
     @Composable
     actual infix fun provides(value: String?): ProvidedValue<*> {
         val configuration = LocalConfiguration.current
-
-        Log.d("my", "Locale: $value")
 
         if (default == null) {
             default = Locale.getDefault()
