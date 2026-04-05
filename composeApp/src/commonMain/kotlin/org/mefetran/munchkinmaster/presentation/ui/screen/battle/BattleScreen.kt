@@ -44,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -109,11 +110,10 @@ fun BattleScreen(
     val layoutDirection = LocalLayoutDirection.current
     val playersPagerState = rememberPagerState(pageCount = { component.players.size })
     val monstersPagerState = rememberPagerState(pageCount = { component.monsters.size })
-    val isVerticalPager by remember {
-        derivedStateOf {
-            windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND)
-        }
+    val isVerticalPager by remember(windowSizeClass) {
+        mutableStateOf(windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND))
     }
+    val isWide by remember(windowSizeClass) { mutableStateOf(windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) }
     val windowInsetsPaddings = WindowInsets.safeDrawing.asPaddingValues()
     val selectAvatarSlot by component.selectAvatarSlot.subscribeAsState()
     val selectPlayerSlot by component.selectPlayerSlot.subscribeAsState()
@@ -152,10 +152,12 @@ fun BattleScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                AddPlayerButton(
-                    enabled = component.players.size < 2,
-                    onClick = component::onAddPlayerClick
-                )
+                if (!isVerticalPager) {
+                    AddPlayerButton(
+                        enabled = component.players.size < 2,
+                        onClick = component::onAddPlayerClick
+                    )
+                }
                 if (isVerticalPager) {
                     PlayersVerticalPager(
                         players = component.players,
@@ -188,16 +190,37 @@ fun BattleScreen(
                         onDeletePlayerClick = component::onDeletePlayerClick,
                     )
                 }
-                BattleScoreBlock(
-                    playersPower = component
-                        .players
-                        .sumOf { it.level + it.power + it.modificator },
-                    monstersPower = component
-                        .monsters
-                        .sumOf { it.level + it.modificator },
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
                 if (isVerticalPager) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        AddPlayerButton(
+                            enabled = component.players.size < 2,
+                            onClick = component::onAddPlayerClick
+                        )
+                        BattleScoreBlock(
+                            playersPower = component
+                                .players
+                                .sumOf { it.level + it.power + it.modificator },
+                            monstersPower = component
+                                .monsters
+                                .sumOf { it.level + it.modificator },
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        AddMonsterButton(
+                            onClick = component::onAddMonsterClick
+                        )
+                    }
+                } else {
+                    BattleScoreBlock(
+                        playersPower = component
+                            .players
+                            .sumOf { it.level + it.power + it.modificator },
+                        monstersPower = component
+                            .monsters
+                            .sumOf { it.level + it.modificator },
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+                if (isVerticalPager && !isWide) {
                     MonstersVerticalPager(
                         monsters = component.monsters,
                         state = monstersPagerState,
@@ -226,9 +249,11 @@ fun BattleScreen(
                         onCloneMonster = component::onCloneMonster,
                     )
                 }
-                AddMonsterButton(
-                    onClick = component::onAddMonsterClick
-                )
+                if (!isVerticalPager) {
+                    AddMonsterButton(
+                        onClick = component::onAddMonsterClick
+                    )
+                }
             }
             BattleToolbar(
                 modifier = Modifier
