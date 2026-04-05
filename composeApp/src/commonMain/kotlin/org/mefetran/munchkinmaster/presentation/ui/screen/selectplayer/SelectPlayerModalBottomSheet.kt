@@ -27,13 +27,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.close
 import munchkinmaster.composeapp.generated.resources.select_player_title
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.presentation.ui.uikit.card.PlayerItem
 
 @OptIn(ExperimentalMaterial3Api::class)

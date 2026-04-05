@@ -3,6 +3,7 @@ package org.mefetran.munchkinmaster.presentation.ui.uikit.card
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun StatusCard(
@@ -40,7 +41,8 @@ fun StatusCard(
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(
                 text = title,

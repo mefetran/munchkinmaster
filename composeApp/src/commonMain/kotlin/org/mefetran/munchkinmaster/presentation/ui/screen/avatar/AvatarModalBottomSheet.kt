@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.coroutines.launch
@@ -42,7 +43,6 @@ import munchkinmaster.composeapp.generated.resources.close
 import munchkinmaster.composeapp.generated.resources.select_avatar_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Avatar
 import org.mefetran.munchkinmaster.presentation.util.getDrawableResource
 

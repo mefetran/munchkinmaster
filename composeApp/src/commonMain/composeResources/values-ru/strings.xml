@@ -31,8 +31,8 @@
     <string name="english">Английский</string>
     <string name="russian">Русский</string>
     <string name="level_limit">Лимит уровней</string>
-    <string name="standard">Стандарт</string>
-    <string name="epic_munchkin">Эпичный Манчкин</string>
+    <string name="standard">Стандарт (1-10)</string>
+    <string name="epic_munchkin">Эпичный Манчкин (1-20)</string>
     <string name="unlimited">Без лимита</string>
     <string name="keep_screen_on">Не выключать экран</string>
 </resources>

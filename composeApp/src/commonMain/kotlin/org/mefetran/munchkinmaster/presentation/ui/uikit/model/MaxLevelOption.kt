@@ -8,19 +8,19 @@ import org.jetbrains.compose.resources.StringResource
 import org.mefetran.munchkinmaster.domain.model.MaxLevel
 
 sealed interface MaxLevelOption : LocalizedName{
-    val value: MaxLevel
+    val maxLevel: MaxLevel
     data object Standard : MaxLevelOption {
         override val localizedName: StringResource = Res.string.standard
-        override val value: MaxLevel = MaxLevel.Standard
+        override val maxLevel: MaxLevel = MaxLevel.Standard
     }
 
     data object EpicMunchkin : MaxLevelOption {
         override val localizedName: StringResource = Res.string.epic_munchkin
-        override val value: MaxLevel = MaxLevel.EpicMunchkin
+        override val maxLevel: MaxLevel = MaxLevel.EpicMunchkin
     }
 
     data object Unlimited : MaxLevelOption {
         override val localizedName: StringResource = Res.string.unlimited
-        override val value: MaxLevel = MaxLevel.Unlimited
+        override val maxLevel: MaxLevel = MaxLevel.Unlimited
     }
 }

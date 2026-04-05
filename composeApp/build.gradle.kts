@@ -52,20 +52,20 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
-            implementation(compose.preview)
+            implementation(libs.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(libs.compose.ui.backhandler)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.runtime)
+            implementation(libs.foundation)
+            implementation(libs.material3)
+            implementation(libs.ui)
+            implementation(libs.compose.navigationevent)
+            implementation(libs.material.icons.extended)
+            implementation(libs.components.resources)
+            implementation(libs.ui.tooling.preview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -121,7 +121,7 @@ android {
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
+    debugImplementation(libs.ui.tooling)
 }
 
 compose.desktop {

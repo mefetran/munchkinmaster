@@ -5,11 +5,18 @@ import kotlinx.coroutines.flow.flowOf
 import org.mefetran.munchkinmaster.domain.model.Player
 import org.mefetran.munchkinmaster.domain.repository.PlayerRepository
 
+const val FAILING_ID = 31L
+
 class FakePlayerRepository : PlayerRepository {
 
     var players = emptyList<Player>()
 
     override suspend fun createPlayer(player: Player): Boolean {
+        // fake failed creating
+        if (player.id == FAILING_ID) {
+            return false
+        }
+
         players = players + player
 
         return players.contains(player)

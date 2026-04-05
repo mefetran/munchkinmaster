@@ -20,13 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import munchkinmaster.composeapp.generated.resources.Res
 import munchkinmaster.composeapp.generated.resources.level
 import munchkinmaster.composeapp.generated.resources.modificator
 import munchkinmaster.composeapp.generated.resources.monster
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mefetran.munchkinmaster.domain.model.Monster
 
 @Composable
@@ -81,7 +81,7 @@ fun BattleMonsterCard(
         }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             modifier = Modifier.padding(12.dp).fillMaxWidth()
         ) {
             StatusCard(
@@ -101,7 +101,7 @@ fun BattleMonsterCard(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "en")
 @Composable
 fun BattleMonsterCardPreview() {
-    val monsterState = remember { mutableStateOf(Monster(id = 0, level = 4, modificator = -2)) }
+    val monsterState = remember { mutableStateOf(Monster(id = "some_id", level = 4, modificator = -2)) }
 
     BattleMonsterCard(
         name = stringResource(Res.string.monster) + " 1",
