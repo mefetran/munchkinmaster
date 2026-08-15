@@ -6,7 +6,7 @@ val appVersion = "0.5.0"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -28,21 +28,21 @@ detekt {
     )
     buildUponDefaultConfig = true
     config.setFrom("$projectDir/config/detekt.yml")
-    reports {
-        html.required.set(true)
-        html.outputLocation.set(file("build/reports/detekt/detekt_composeApp.html"))
-
-        xml.required.set(true)
-        txt.required.set(false)
-        sarif.required.set(false)
-    }
 }
 
 kotlin {
-    androidTarget {
+    androidLibrary {
+        namespace = "org.mefetran.munchkinmaster.composeLibrary"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
+        }
+        androidResources {
+            enable = true
+        }
+        withHostTest {
+
         }
     }
 
@@ -93,35 +93,8 @@ kotlin {
     }
 }
 
-android {
-    namespace = "org.mefetran.munchkinmaster"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "org.mefetran.munchkinmaster"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = appVersion
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
 dependencies {
-    debugImplementation(libs.ui.tooling)
+    androidRuntimeClasspath(libs.ui.tooling)
 }
 
 compose.desktop {
@@ -129,8 +102,10 @@ compose.desktop {
         mainClass = "org.mefetran.munchkinmaster.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage,
-                TargetFormat.Rpm)
+            targetFormats(
+                TargetFormat.Msi, TargetFormat.Deb, TargetFormat.AppImage,
+                TargetFormat.Rpm
+            )
             packageName = "org.mefetran.munchkinmaster"
             packageVersion = appVersion
             linux {

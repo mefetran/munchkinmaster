@@ -83,7 +83,7 @@ fun CreatePlayerScreen(
     modifier: Modifier = Modifier,
 ) {
     val windowSizeClass = currentWindowSizeClass()
-    val isWide by remember { mutableStateOf(windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) }
+    val isWide by remember(windowSizeClass) { mutableStateOf(windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)) }
     val scrollState = rememberScrollState()
     val state by component.state.subscribeAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
