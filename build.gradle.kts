@@ -4,6 +4,7 @@ import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
+    alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.composeHotReload) apply false
@@ -56,6 +57,10 @@ subprojects {
                 html.outputLocation.set(
                     file("$buildDir/reports/detekt/${moduleName}.html")
                 )
+
+                xml.required.set(true)
+                txt.required.set(false)
+                sarif.required.set(false)
             }
         }
     }
